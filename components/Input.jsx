@@ -1,17 +1,23 @@
-import PropTypes from "prop-types";
 import { useState } from "react";
+import PropTypes from "prop-types";
 import { TextInput, StyleSheet } from "react-native";
 
-export const Input = ({ isSecure, placeholder, indents }) => {
-  const [value, setValue] = useState("");
+export const Input = ({ isSecure, placeholder, position, onChange, value }) => {
+  const [focused, setFocused] = useState(false);
   return (
     <TextInput
       value={value}
-      onChange={(text) => setValue(text)}
+      onChangeText={onChange}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
       placeholder={placeholder}
       placeholderTextColor="#BDBDBD"
       secureTextEntry={isSecure}
-      style={{ ...indents, ...styles.input }}
+      style={{
+        ...position,
+        backgroundColor: focused ? "#FFFFFF" : "#F6F6F6",
+        ...styles.input,
+      }}
     />
   );
 };
@@ -20,7 +26,6 @@ const styles = StyleSheet.create({
   input: {
     height: 50,
     padding: 16,
-    backgroundColor: "#F6F6F6",
     borderWidth: 1,
     borderStyle: "solid",
     borderColor: "#E8E8E8",
@@ -35,5 +40,7 @@ const styles = StyleSheet.create({
 Input.propTypes = {
   isSecure: PropTypes.bool.isRequired,
   placeholder: PropTypes.string,
-  indents: PropTypes.object,
+  position: PropTypes.object,
+  onChange: PropTypes.func.isRequired,
+  value: PropTypes.string.isRequired,
 };

@@ -2,8 +2,8 @@ import { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
-import { StyleSheet, Text, View } from "react-native";
-import RegistrationScreen from "./Screens/RegistrationScreen";
+import { StyleSheet, View } from "react-native";
+import { RegistrationScreen, LoginScreen } from "./Screens";
 
 const loadFonts = async () => {
   await Font.loadAsync({
@@ -29,6 +29,7 @@ const App = () => {
   return (
     <View style={styles.container}>
       <RegistrationScreen />
+      {/* <LoginScreen /> */}
       <StatusBar style="auto" />
     </View>
   );

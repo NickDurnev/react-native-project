@@ -3,24 +3,19 @@ import {
   View,
   ImageBackground,
   StyleSheet,
-  Dimensions,
   KeyboardAvoidingView,
   Keyboard,
   Platform,
   TouchableWithoutFeedback,
 } from "react-native";
 import { Title, Input, TextBtn, SubmitBtn } from "../components";
-import PlusIcon from "../assets/icons/add-plus.svg";
-
-const halfWindowsWidth = Dimensions.get("window").width / 2;
 
 const initialState = {
-  login: "",
   email: "",
   password: "",
 };
 
-export const RegistrationScreen = () => {
+export const LoginScreen = () => {
   const [isHiddenPassword, setIsHiddenPassword] = useState(true);
   const [state, setstate] = useState(initialState);
   const [isShownKeyboard, setIsShownKeyboard] = useState(false);
@@ -67,10 +62,10 @@ export const RegistrationScreen = () => {
             ...styles.form,
             ...Platform.select({
               android: {
-                height: isShownKeyboard ? 390 : 550,
+                height: isShownKeyboard ? 270 : 490,
               },
               ios: {
-                height: isShownKeyboard ? 620 : 550,
+                height: 490,
               },
             }),
           }}
@@ -78,23 +73,11 @@ export const RegistrationScreen = () => {
           <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : "height"}
           >
-            <View style={styles.avatar}>
-              <PlusIcon style={styles.avatarIcon} width={25} height={25} />
-            </View>
             <Title
-              addStyles={{ marginTop: 95, marginBottom: 33, fontSize: 30 }}
+              addStyles={{ marginTop: 35, marginBottom: 33, fontSize: 30 }}
             >
-              Реєстрація
+              Увійти
             </Title>
-            <Input
-              isSecure={false}
-              placeholder={"Логін"}
-              value={state.login}
-              onChange={(value) =>
-                setstate((prevState) => ({ ...prevState, login: value }))
-              }
-              position={{ marginBottom: 15 }}
-            />
             <Input
               isSecure={false}
               placeholder={"Адреса електронної пошти"}
@@ -122,7 +105,7 @@ export const RegistrationScreen = () => {
             </View>
             {!isShownKeyboard && (
               <SubmitBtn
-                text={"Зареєструватися"}
+                text={"Увійти"}
                 onSubmit={handleSubmit}
                 position={{
                   marginBottom: 15,
@@ -132,7 +115,7 @@ export const RegistrationScreen = () => {
             {!isShownKeyboard && (
               <TextBtn
                 handlePress={() => console.log("Увійшов")}
-                text={"Вже є аккаунт? Увійти"}
+                text={"Нема аккаунта? Зареєструватися"}
                 position={{
                   alignItems: "center",
                   marginBottom: 45,
@@ -164,19 +147,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-  },
-  avatar: {
-    height: 120,
-    width: 120,
-    position: "absolute",
-    top: -60,
-    left: halfWindowsWidth - 75,
-    backgroundColor: "#F6F6F6",
-    borderRadius: 16,
-  },
-  avatarIcon: {
-    position: "absolute",
-    bottom: 15,
-    right: -12,
   },
 });
