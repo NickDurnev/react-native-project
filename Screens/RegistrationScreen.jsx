@@ -22,7 +22,7 @@ const initialState = {
 
 export const RegistrationScreen = () => {
   const [isHiddenPassword, setIsHiddenPassword] = useState(true);
-  const [state, setstate] = useState(initialState);
+  const [state, setState] = useState(initialState);
   const [isShownKeyboard, setIsShownKeyboard] = useState(false);
 
   useEffect(() => {
@@ -82,7 +82,12 @@ export const RegistrationScreen = () => {
               <PlusIcon style={styles.avatarIcon} width={25} height={25} />
             </View>
             <Title
-              addStyles={{ marginTop: 95, marginBottom: 33, fontSize: 30 }}
+              addStyles={{
+                marginTop: 95,
+                marginBottom: 33,
+                fontSize: 30,
+                lineHeight: 35,
+              }}
             >
               Реєстрація
             </Title>

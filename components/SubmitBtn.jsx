@@ -1,9 +1,20 @@
 import PropTypes from "prop-types";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 
-export const SubmitBtn = ({ text, onSubmit, position }) => (
-  <TouchableOpacity onPress={onSubmit} style={{ ...position, ...styles.btn }}>
-    <Text style={styles.BtnText}>{text}</Text>
+export const SubmitBtn = ({ text, onSubmit, position, disabled = false }) => (
+  <TouchableOpacity
+    onPress={onSubmit}
+    style={{
+      ...position,
+      ...styles.btn,
+      backgroundColor: disabled ? "#F6F6F6" : "#FF6C00",
+    }}
+  >
+    <Text
+      style={{ ...styles.BtnText, color: disabled ? "#BDBDBD" : "#FFFFFF" }}
+    >
+      {text}
+    </Text>
   </TouchableOpacity>
 );
 
@@ -19,7 +30,6 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
-    color: "#FFFFFF",
   },
 });
 
@@ -27,4 +37,5 @@ SubmitBtn.propTypes = {
   text: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired,
   position: PropTypes.object,
+  disabled: PropTypes.bool,
 };

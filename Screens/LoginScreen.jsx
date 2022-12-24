@@ -74,7 +74,12 @@ export const LoginScreen = () => {
             behavior={Platform.OS == "ios" ? "padding" : "height"}
           >
             <Title
-              addStyles={{ marginTop: 35, marginBottom: 33, fontSize: 30 }}
+              addStyles={{
+                marginTop: 35,
+                marginBottom: 33,
+                fontSize: 30,
+                lineHeight: 35,
+              }}
             >
               Увійти
             </Title>
