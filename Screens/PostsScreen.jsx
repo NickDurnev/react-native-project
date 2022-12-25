@@ -53,11 +53,13 @@ export const PostsScreen = () => {
       <Container>
         <FlatList
           data={posts}
-          renderItem={({ item }) => (
-            <View>
-              <Post data={item} />
-            </View>
-          )}
+          renderItem={({ item }) => {
+            return (
+              <View>
+                <Post data={item} />
+              </View>
+            );
+          }}
           keyExtractor={(item) => item.id}
         ></FlatList>
       </Container>

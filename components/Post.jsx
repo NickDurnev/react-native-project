@@ -3,6 +3,8 @@ import { View, Text, Image, StyleSheet, FlatList } from "react-native";
 import CommentIcon from "../assets/icons/message-circle.svg";
 import MapIcon from "../assets/icons/map-pin.svg";
 
+const post = {};
+
 export const Post = ({ data }) => {
   const { name, email } = data;
   return (
@@ -19,24 +21,45 @@ export const Post = ({ data }) => {
       </View>
       <FlatList
         data={data.posts}
-        renderItem={({ item }) => {
+        renderItem={({ item, index }) => {
           const { image, name, location, comments } = item;
-          // console.log(comments);
+          console.log(index);
           return (
-            <View style={{ height: 300 }}>
+            <View
+              style={{
+                height: 300,
+                marginBottom: index === data.posts.length - 1 ? 0 : 32,
+              }}
+            >
               {/* <Image source={{ uri: { image } }} style={styles.image} /> */}
               <View style={styles.image}></View>
               <Text style={styles.imageName}>{name}</Text>
               <View>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <CommentIcon
-                    width={24}
-                    height={24}
-                    style={{ marginRight: 8 }}
-                  />
-                  <Text style={styles.commentsNumber}>
-                    {comments ? comments.length : 0}
-                  </Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <CommentIcon
+                      width={24}
+                      height={24}
+                      style={{ marginRight: 8 }}
+                    />
+                    <Text style={styles.commentsNumber}>
+                      {comments ? comments.length : 0}
+                    </Text>
+                  </View>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <MapIcon
+                      width={24}
+                      height={24}
+                      style={{ marginRight: 8 }}
+                    />
+                    <Text style={styles.locationText}>{location}</Text>
+                  </View>
                 </View>
               </View>
             </View>
@@ -61,8 +84,9 @@ const styles = StyleSheet.create({
   },
   image: {
     marginBottom: 8,
-    backgroundColor: "#F6F6F6",
     height: 240,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 8,
   },
   textWrap: {
     alignItems: "flex-start",
@@ -94,6 +118,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     color: "#BDBDBD",
+  },
+  locationText: {
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    lineHeight: 19,
+    color: "#212121",
+    textDecorationLine: "underline",
   },
 });
 

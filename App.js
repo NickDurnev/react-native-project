@@ -2,13 +2,13 @@ import { useState, useEffect, useCallback } from "react";
 import { StatusBar } from "expo-status-bar";
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-// import AppLoading from "expo-app-loading";
 import { StyleSheet, View } from "react-native";
 import {
   RegistrationScreen,
   LoginScreen,
   PostsScreen,
   CreatePostScreen,
+  CommentsScreen,
 } from "./Screens";
 
 const loadFonts = async () => {
@@ -56,7 +56,7 @@ const App = () => {
 
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
-      <PostsScreen />
+      <CommentsScreen />
       {/* <LoginScreen /> */}
       <StatusBar style="auto" />
     </View>
