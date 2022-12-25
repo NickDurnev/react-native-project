@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: 50,
     fontFamily: "Roboto-Medium",
-    fontWeight: 500,
+    fontWeight: "500",
     fontSize: 16,
     lineHeight: 19,
     color: "#212121",

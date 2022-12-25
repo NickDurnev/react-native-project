@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
   },
   name: {
     fontFamily: "Roboto-Bold",
-    fontWeight: 700,
+    fontWeight: "700",
     fontSize: 13,
     lineHeight: 15,
     color: "#212121",
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   imageName: {
     marginBottom: 8,
     fontFamily: "Roboto-Medium",
-    fontWeight: 500,
+    fontWeight: "500",
     fontSize: 16,
     lineHeight: 19,
     color: "#212121",
@@ -101,11 +101,13 @@ Post.propTypes = {
   data: PropTypes.shape({
     name: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
-    posts: PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      image: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      location: PropTypes.string.isRequired,
-    }),
+    posts: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        image: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        location: PropTypes.string.isRequired,
+      })
+    ),
   }).isRequired,
 };
