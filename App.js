@@ -9,6 +9,7 @@ import {
   PostsScreen,
   CreatePostScreen,
   CommentsScreen,
+  ProfileScreen,
 } from "./Screens";
 
 const loadFonts = async () => {
@@ -56,7 +57,7 @@ const App = () => {
 
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
-      <CommentsScreen />
+      <ProfileScreen />
       {/* <LoginScreen /> */}
       <StatusBar style="auto" />
     </View>

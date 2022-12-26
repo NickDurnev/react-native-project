@@ -3,8 +3,6 @@ import { View, Text, Image, StyleSheet, FlatList } from "react-native";
 import CommentIcon from "../assets/icons/message-circle.svg";
 import MapIcon from "../assets/icons/map-pin.svg";
 
-const post = {};
-
 export const Post = ({ data }) => {
   const { name, email } = data;
   return (

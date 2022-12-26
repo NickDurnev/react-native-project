@@ -65,7 +65,7 @@ export const LoginScreen = () => {
                 height: isShownKeyboard ? 270 : 490,
               },
               ios: {
-                height: 490,
+                height: isShownKeyboard ? 550 : 490,
               },
             }),
           }}

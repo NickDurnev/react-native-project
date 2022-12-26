@@ -1,6 +1,5 @@
-import { StyleSheet, View, FlatList, TouchableOpacity } from "react-native";
-import { Header, Container, Title, Post } from "../components";
-import LogOutIcon from "../assets/icons/log-out.svg";
+import { View, FlatList } from "react-native";
+import { Header, Container, Title, Post, LogoutBtn } from "../components";
 
 const posts = [
   {
@@ -43,12 +42,10 @@ export const PostsScreen = () => {
         >
           Публікації
         </Title>
-        <TouchableOpacity
-          style={styles.button}
+        <LogoutBtn
+          addStyles={{ position: "absolute", top: 55, right: 16 }}
           onPress={() => console.log("Logout")}
-        >
-          <LogOutIcon height={24} width={24} />
-        </TouchableOpacity>
+        />
       </Header>
       <Container>
         <FlatList
@@ -66,11 +63,3 @@ export const PostsScreen = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    position: "absolute",
-    top: 55,
-    right: 16,
-  },
-});

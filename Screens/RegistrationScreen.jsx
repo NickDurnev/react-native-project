@@ -47,7 +47,7 @@ export const RegistrationScreen = () => {
 
   const handleSubmit = () => {
     console.log(state);
-    setstate(initialState);
+    setState(initialState);
   };
 
   const handleKeyboardHide = () => {
@@ -96,7 +96,7 @@ export const RegistrationScreen = () => {
               placeholder={"Логін"}
               value={state.login}
               onChange={(value) =>
-                setstate((prevState) => ({ ...prevState, login: value }))
+                setState((prevState) => ({ ...prevState, login: value }))
               }
               position={{ marginBottom: 15 }}
             />
@@ -106,7 +106,7 @@ export const RegistrationScreen = () => {
               position={{ marginBottom: 15 }}
               value={state.email}
               onChange={(value) =>
-                setstate((prevState) => ({ ...prevState, email: value }))
+                setState((prevState) => ({ ...prevState, email: value }))
               }
             />
             <View style={{ position: "relative", marginBottom: 45 }}>
@@ -115,7 +115,7 @@ export const RegistrationScreen = () => {
                 placeholder={"Пароль"}
                 value={state.password}
                 onChange={(value) =>
-                  setstate((prevState) => ({ ...prevState, password: value }))
+                  setState((prevState) => ({ ...prevState, password: value }))
                 }
               />
               <TextBtn
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     width: 120,
     position: "absolute",
     top: -60,
-    left: halfWindowsWidth - 75,
+    left: halfWindowsWidth - 60,
     backgroundColor: "#F6F6F6",
     borderRadius: 16,
   },
