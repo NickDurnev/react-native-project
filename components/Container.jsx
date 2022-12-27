@@ -6,7 +6,7 @@ export const Container = ({ children, addStyles }) => (
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    backgroundColor: "#FFFFFF",
     paddingHorizontal: 16,
     paddingVertical: 32,
   },

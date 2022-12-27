@@ -3,21 +3,26 @@ import {
   View,
   ImageBackground,
   StyleSheet,
+  Dimensions,
   KeyboardAvoidingView,
   Keyboard,
   Platform,
   TouchableWithoutFeedback,
 } from "react-native";
-import { Title, Input, TextBtn, SubmitBtn } from "../components";
+import { Title, Input, TextBtn, SubmitBtn } from "../../components";
+import PlusIcon from "../../assets/icons/add-plus.svg";
+
+const halfWindowsWidth = Dimensions.get("window").width / 2;
 
 const initialState = {
+  login: "",
   email: "",
   password: "",
 };
 
-export const LoginScreen = () => {
+export const RegistrationScreen = ({ navigation }) => {
   const [isHiddenPassword, setIsHiddenPassword] = useState(true);
-  const [state, setstate] = useState(initialState);
+  const [state, setState] = useState(initialState);
   const [isShownKeyboard, setIsShownKeyboard] = useState(false);
 
   useEffect(() => {
@@ -42,7 +47,8 @@ export const LoginScreen = () => {
 
   const handleSubmit = () => {
     console.log(state);
-    setstate(initialState);
+    setState(initialState);
+    navigation.navigate("Home");
   };
 
   const handleKeyboardHide = () => {
@@ -55,17 +61,17 @@ export const LoginScreen = () => {
       <View style={styles.container}>
         <ImageBackground
           style={styles.bcgImage}
-          source={require("../assets/images/PhotoBG.png")}
+          source={require("../../assets/images/PhotoBG.png")}
         />
         <View
           style={{
             ...styles.form,
             ...Platform.select({
               android: {
-                height: isShownKeyboard ? 270 : 490,
+                height: isShownKeyboard ? 390 : 550,
               },
               ios: {
-                height: isShownKeyboard ? 550 : 490,
+                height: isShownKeyboard ? 620 : 550,
               },
             }),
           }}
@@ -73,23 +79,35 @@ export const LoginScreen = () => {
           <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : "height"}
           >
+            <View style={styles.avatar}>
+              <PlusIcon style={styles.avatarIcon} width={25} height={25} />
+            </View>
             <Title
               addStyles={{
-                marginTop: 35,
+                marginTop: 95,
                 marginBottom: 33,
                 fontSize: 30,
                 lineHeight: 35,
               }}
             >
-              Увійти
+              Реєстрація
             </Title>
+            <Input
+              isSecure={false}
+              placeholder={"Логін"}
+              value={state.login}
+              onChange={(value) =>
+                setState((prevState) => ({ ...prevState, login: value }))
+              }
+              position={{ marginBottom: 15 }}
+            />
             <Input
               isSecure={false}
               placeholder={"Адреса електронної пошти"}
               position={{ marginBottom: 15 }}
               value={state.email}
               onChange={(value) =>
-                setstate((prevState) => ({ ...prevState, email: value }))
+                setState((prevState) => ({ ...prevState, email: value }))
               }
             />
             <View style={{ position: "relative", marginBottom: 45 }}>
@@ -98,7 +116,7 @@ export const LoginScreen = () => {
                 placeholder={"Пароль"}
                 value={state.password}
                 onChange={(value) =>
-                  setstate((prevState) => ({ ...prevState, password: value }))
+                  setState((prevState) => ({ ...prevState, password: value }))
                 }
               />
               <TextBtn
@@ -110,7 +128,7 @@ export const LoginScreen = () => {
             </View>
             {!isShownKeyboard && (
               <SubmitBtn
-                text={"Увійти"}
+                text={"Зареєструватися"}
                 onSubmit={handleSubmit}
                 position={{
                   marginBottom: 15,
@@ -119,8 +137,8 @@ export const LoginScreen = () => {
             )}
             {!isShownKeyboard && (
               <TextBtn
-                handlePress={() => console.log("Увійшов")}
-                text={"Нема аккаунта? Зареєструватися"}
+                handlePress={() => navigation.navigate("Login")}
+                text={"Вже є аккаунт? Увійти"}
                 position={{
                   alignItems: "center",
                   marginBottom: 45,
@@ -152,5 +170,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
+  },
+  avatar: {
+    height: 120,
+    width: 120,
+    position: "absolute",
+    top: -60,
+    left: halfWindowsWidth - 60,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 16,
+  },
+  avatarIcon: {
+    position: "absolute",
+    bottom: 15,
+    right: -12,
   },
 });

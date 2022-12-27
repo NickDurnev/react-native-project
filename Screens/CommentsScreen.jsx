@@ -8,9 +8,8 @@ import {
   TextInput,
   Dimensions,
   Keyboard,
-  TouchableWithoutFeedback,
 } from "react-native";
-import { Header, Container, Title, Post } from "../components";
+import { Header, Container, Title } from "../components";
 import GoBackIcon from "../assets/icons/arrow-left.svg";
 import SendIcon from "../assets/icons/send.svg";
 
@@ -87,7 +86,6 @@ export const CommentsScreen = () => {
   // };
 
   return (
-    // <TouchableWithoutFeedback onPress={handleKeyboardHide} style={{ flex: 1 }}>
     <View style={{ flex: 1 }}>
       <Header>
         <TouchableOpacity
@@ -105,7 +103,7 @@ export const CommentsScreen = () => {
           Коментарі
         </Title>
       </Header>
-      <Container addStyles={{ paddingBottom: 86 }}>
+      <Container addStyles={{ paddingBottom: 86, flex: 1 }}>
         {/* <Image source={{ uri: { image } }} style={styles.image} /> */}
         <View style={styles.image}></View>
         <FlatList
@@ -162,7 +160,6 @@ export const CommentsScreen = () => {
         </TouchableOpacity>
       </View>
     </View>
-    // </TouchableWithoutFeedback>
   );
 };
 

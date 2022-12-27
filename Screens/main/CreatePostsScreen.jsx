@@ -10,10 +10,10 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { useState, useEffect } from "react";
-import { Header, Container, Title, SubmitBtn } from "../components";
-import GoBackIcon from "../assets/icons/arrow-left.svg";
-import CameraIcon from "../assets/icons/camera.svg";
-import MapIcon from "../assets/icons/map-pin.svg";
+import { Header, Container, Title, SubmitBtn } from "../../components";
+import GoBackIcon from "../../assets/icons/arrow-left.svg";
+import CameraIcon from "../../assets/icons/camera.svg";
+import MapIcon from "../../assets/icons/map-pin.svg";
 
 const initialState = {
   avatar: "avatar",

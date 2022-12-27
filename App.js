@@ -1,16 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { StatusBar } from "expo-status-bar";
+import { NavigationContainer } from "@react-navigation/native";
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { StyleSheet, View } from "react-native";
-import {
-  RegistrationScreen,
-  LoginScreen,
-  PostsScreen,
-  CreatePostScreen,
-  CommentsScreen,
-  ProfileScreen,
-} from "./Screens";
+import { AuthRoute } from "./components";
 
 const loadFonts = async () => {
   await Font.loadAsync({
@@ -56,11 +50,12 @@ const App = () => {
   }
 
   return (
-    <View style={styles.container} onLayout={onLayoutRootView}>
-      <ProfileScreen />
-      {/* <LoginScreen /> */}
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <View style={styles.container} onLayout={onLayoutRootView}>
+        <AuthRoute />
+        <StatusBar style="auto" />
+      </View>
+    </NavigationContainer>
   );
 };
 

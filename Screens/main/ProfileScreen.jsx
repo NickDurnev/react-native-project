@@ -5,8 +5,8 @@ import {
   Dimensions,
   FlatList,
 } from "react-native";
-import { Container, Title, LogoutBtn, Post } from "../components";
-import CrossIcon from "../assets/icons/delete-cross.svg";
+import { Container, Title, LogoutBtn, Post } from "../../components";
+import CrossIcon from "../../assets/icons/delete-cross.svg";
 
 const halfWindowsWidth = Dimensions.get("window").width / 2;
 
@@ -27,6 +27,7 @@ const profile = {
           date: "09 июня, 2020 | 08:40",
         },
       ],
+      likes: [{ id: 3, name: "Vitaliy Bikov", email: "email@example.com" }],
     },
     {
       id: 2,
@@ -34,15 +35,21 @@ const profile = {
       name: "Ліс",
       location: "Ivano-Frankivs'k Region, Ukraine",
     },
+    {
+      id: 3,
+      image: "../assets/mocks/Posts/Post2.png",
+      name: "Гори",
+      location: "Ivano-Frankivs'k Region, Ukraine",
+    },
   ],
 };
 
 export const ProfileScreen = () => {
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <ImageBackground
         style={styles.bcgImage}
-        source={require("../assets/images/PhotoBG.png")}
+        source={require("../../assets/images/PhotoBG.png")}
       >
         <Container addStyles={styles.container}>
           <View style={styles.avatar}>
@@ -50,17 +57,18 @@ export const ProfileScreen = () => {
           </View>
           <LogoutBtn
             addStyles={{ marginLeft: "auto" }}
-            onPress={() => console.log("Logout")}
+            onPress={() => navigation.navigate("Register")}
           />
-          <Title addStyles={{ marginTop: 90, fontSize: 30, lineHeight: 30 }}>
-            {profile.name}
-          </Title>
+          <Title addStyles={styles.title}>{profile.name}</Title>
           <FlatList
             data={profile.posts}
-            renderItem={({ item }) => {
+            renderItem={({ item, index }) => {
               return (
                 <View>
-                  <Post data={item} />
+                  <Post
+                    data={item}
+                    marginBottom={index === profile.posts.length - 1 ? 0 : 32}
+                  />
                 </View>
               );
             }}
@@ -78,6 +86,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   container: {
+    flex: 1,
     position: "relative",
     marginTop: 150,
     paddingTop: 22,
@@ -99,5 +108,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 10,
     right: -17,
+  },
+  title: {
+    marginTop: 60,
+    marginBottom: 35,
+    fontSize: 30,
+    lineHeight: 30,
   },
 });

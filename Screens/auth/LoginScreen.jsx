@@ -3,26 +3,21 @@ import {
   View,
   ImageBackground,
   StyleSheet,
-  Dimensions,
   KeyboardAvoidingView,
   Keyboard,
   Platform,
   TouchableWithoutFeedback,
 } from "react-native";
-import { Title, Input, TextBtn, SubmitBtn } from "../components";
-import PlusIcon from "../assets/icons/add-plus.svg";
-
-const halfWindowsWidth = Dimensions.get("window").width / 2;
+import { Title, Input, TextBtn, SubmitBtn } from "../../components";
 
 const initialState = {
-  login: "",
   email: "",
   password: "",
 };
 
-export const RegistrationScreen = () => {
+export const LoginScreen = ({ navigation }) => {
   const [isHiddenPassword, setIsHiddenPassword] = useState(true);
-  const [state, setState] = useState(initialState);
+  const [state, setstate] = useState(initialState);
   const [isShownKeyboard, setIsShownKeyboard] = useState(false);
 
   useEffect(() => {
@@ -47,7 +42,8 @@ export const RegistrationScreen = () => {
 
   const handleSubmit = () => {
     console.log(state);
-    setState(initialState);
+    setstate(initialState);
+    navigation.navigate("Home");
   };
 
   const handleKeyboardHide = () => {
@@ -60,17 +56,17 @@ export const RegistrationScreen = () => {
       <View style={styles.container}>
         <ImageBackground
           style={styles.bcgImage}
-          source={require("../assets/images/PhotoBG.png")}
+          source={require("../../assets/images/PhotoBG.png")}
         />
         <View
           style={{
             ...styles.form,
             ...Platform.select({
               android: {
-                height: isShownKeyboard ? 390 : 550,
+                height: isShownKeyboard ? 270 : 490,
               },
               ios: {
-                height: isShownKeyboard ? 620 : 550,
+                height: isShownKeyboard ? 550 : 490,
               },
             }),
           }}
@@ -78,35 +74,23 @@ export const RegistrationScreen = () => {
           <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : "height"}
           >
-            <View style={styles.avatar}>
-              <PlusIcon style={styles.avatarIcon} width={25} height={25} />
-            </View>
             <Title
               addStyles={{
-                marginTop: 95,
+                marginTop: 35,
                 marginBottom: 33,
                 fontSize: 30,
                 lineHeight: 35,
               }}
             >
-              Реєстрація
+              Увійти
             </Title>
-            <Input
-              isSecure={false}
-              placeholder={"Логін"}
-              value={state.login}
-              onChange={(value) =>
-                setState((prevState) => ({ ...prevState, login: value }))
-              }
-              position={{ marginBottom: 15 }}
-            />
             <Input
               isSecure={false}
               placeholder={"Адреса електронної пошти"}
               position={{ marginBottom: 15 }}
               value={state.email}
               onChange={(value) =>
-                setState((prevState) => ({ ...prevState, email: value }))
+                setstate((prevState) => ({ ...prevState, email: value }))
               }
             />
             <View style={{ position: "relative", marginBottom: 45 }}>
@@ -115,7 +99,7 @@ export const RegistrationScreen = () => {
                 placeholder={"Пароль"}
                 value={state.password}
                 onChange={(value) =>
-                  setState((prevState) => ({ ...prevState, password: value }))
+                  setstate((prevState) => ({ ...prevState, password: value }))
                 }
               />
               <TextBtn
@@ -127,7 +111,7 @@ export const RegistrationScreen = () => {
             </View>
             {!isShownKeyboard && (
               <SubmitBtn
-                text={"Зареєструватися"}
+                text={"Увійти"}
                 onSubmit={handleSubmit}
                 position={{
                   marginBottom: 15,
@@ -136,8 +120,8 @@ export const RegistrationScreen = () => {
             )}
             {!isShownKeyboard && (
               <TextBtn
-                handlePress={() => console.log("Увійшов")}
-                text={"Вже є аккаунт? Увійти"}
+                handlePress={() => navigation.navigate("Register")}
+                text={"Нема аккаунта? Зареєструватися"}
                 position={{
                   alignItems: "center",
                   marginBottom: 45,
@@ -169,19 +153,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-  },
-  avatar: {
-    height: 120,
-    width: 120,
-    position: "absolute",
-    top: -60,
-    left: halfWindowsWidth - 60,
-    backgroundColor: "#F6F6F6",
-    borderRadius: 16,
-  },
-  avatarIcon: {
-    position: "absolute",
-    bottom: 15,
-    right: -12,
   },
 });
