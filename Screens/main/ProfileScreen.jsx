@@ -44,7 +44,7 @@ const profile = {
   ],
 };
 
-export const ProfileScreen = () => {
+export const ProfileScreen = ({ navigation }) => {
   return (
     <View style={{ flex: 1 }}>
       <ImageBackground
