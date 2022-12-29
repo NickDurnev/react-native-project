@@ -63,7 +63,7 @@ export const PostsScreen = ({ navigation }) => {
               <View style={{ flex: 1 }}>
                 <View style={styles.user}>
                   <Image
-                    source={require("../../assets/mocks/Posts/User.png")}
+                    source={require("../../../assets/mocks/Posts/User.png")}
                     style={styles.avatar}
                   />
                   <View style={styles.textWrap}>

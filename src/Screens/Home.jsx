@@ -2,9 +2,9 @@ import { useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { PostsScreen, CreatePostScreen, ProfileScreen } from "./main";
 
-import PostsIcon from "../assets/icons/toolbar/grid.svg";
-import UserIcon from "../assets/icons/toolbar/user.svg";
-import PlusIcon from "../assets/icons/toolbar/union.svg";
+import PostsIcon from "../../assets/icons/toolbar/grid.svg";
+import UserIcon from "../../assets/icons/toolbar/user.svg";
+import PlusIcon from "../../assets/icons/toolbar/union.svg";
 
 const MainTab = createBottomTabNavigator();
 

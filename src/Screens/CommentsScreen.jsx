@@ -10,8 +10,8 @@ import {
   Keyboard,
 } from "react-native";
 import { Header, Container, Title } from "../components";
-import GoBackIcon from "../assets/icons/arrow-left.svg";
-import SendIcon from "../assets/icons/send.svg";
+import GoBackIcon from "../../assets/icons/arrow-left.svg";
+import SendIcon from "../../assets/icons/send.svg";
 
 const comments = [
   {

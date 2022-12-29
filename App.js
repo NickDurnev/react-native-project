@@ -4,7 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { StyleSheet, View } from "react-native";
-import { AuthRoute } from "./components";
+import { AuthRoute } from "./src/components";
 
 const loadFonts = async () => {
   await Font.loadAsync({

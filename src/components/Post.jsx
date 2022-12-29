@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
 import { View, Text, StyleSheet } from "react-native";
-import CommentIcon from "../assets/icons/message-circle.svg";
-import ActiveCommentIcon from "../assets/icons/message-circle-active.svg";
-import LikeIcon from "../assets/icons/thumbs-up.svg";
-import MapIcon from "../assets/icons/map-pin.svg";
+import CommentIcon from "../../assets/icons/message-circle.svg";
+import ActiveCommentIcon from "../../assets/icons/message-circle-active.svg";
+import LikeIcon from "../../assets/icons/thumbs-up.svg";
+import MapIcon from "../../assets/icons/map-pin.svg";
 
 export const Post = ({ data, marginBottom }) => {
   const { name, comments, location, likes } = data;

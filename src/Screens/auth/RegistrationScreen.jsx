@@ -10,7 +10,7 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { Title, Input, TextBtn, SubmitBtn } from "../../components";
-import PlusIcon from "../../assets/icons/add-plus.svg";
+import PlusIcon from "../../../assets/icons/add-plus.svg";
 
 const halfWindowsWidth = Dimensions.get("window").width / 2;
 
@@ -61,7 +61,7 @@ export const RegistrationScreen = ({ navigation }) => {
       <View style={styles.container}>
         <ImageBackground
           style={styles.bcgImage}
-          source={require("../../assets/images/PhotoBG.png")}
+          source={require("../../../assets/images/PhotoBG.png")}
         />
         <View
           style={{

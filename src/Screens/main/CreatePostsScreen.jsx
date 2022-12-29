@@ -3,6 +3,7 @@ import {
   TouchableOpacity,
   View,
   Text,
+  Image,
   KeyboardAvoidingView,
   TextInput,
   Keyboard,
@@ -10,10 +11,11 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { useState, useEffect } from "react";
+import { Camera } from "expo-camera";
 import { Header, Container, Title, SubmitBtn } from "../../components";
-import GoBackIcon from "../../assets/icons/arrow-left.svg";
-import CameraIcon from "../../assets/icons/camera.svg";
-import MapIcon from "../../assets/icons/map-pin.svg";
+import GoBackIcon from "../../../assets/icons/arrow-left.svg";
+import CameraIcon from "../../../assets/icons/camera.svg";
+import MapIcon from "../../../assets/icons/map-pin.svg";
 
 const initialState = {
   avatar: "avatar",
@@ -24,12 +26,32 @@ const initialState = {
 export const CreatePostScreen = () => {
   const [state, setState] = useState(initialState);
   const [isDisable, setIsDisable] = useState(true);
+  const [hasPermission, setHasPermission] = useState(null);
+  const [camera, setCamera] = useState(null);
+  const [photo, setPhoto] = useState(null);
 
   useEffect(() => {
     if (!Object.values(state).includes("")) {
       setIsDisable(false);
     }
   }, [state]);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestPermissionsAsync();
+      await MediaLibrary.requestPermissionsAsync();
+
+      setHasPermission(status === "granted");
+    })();
+  }, []);
+
+  const takePhoto = async () => {
+    const shot = await camera.takePictureAsync();
+    console.log(shot);
+    setPhoto(shot.uri);
+  };
+
+  console.log(photo);
 
   const handleSubmit = () => {
     if (isDisable) {
@@ -43,6 +65,15 @@ export const CreatePostScreen = () => {
   const handleKeyboardHide = () => {
     Keyboard.dismiss();
   };
+
+  // if (hasPermission === null) {
+  //   return <View />;
+  // }
+
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
+
   return (
     <View style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
       <Header>
@@ -69,9 +100,23 @@ export const CreatePostScreen = () => {
                 behavior={Platform.OS == "ios" ? "padding" : "height"}
               >
                 <View style={{ marginBottom: 32 }}>
-                  <TouchableOpacity style={styles.fileLoader}>
-                    <CameraIcon width={60} height={60} />
-                  </TouchableOpacity>
+                  {photo ? (
+                    <Image source={{ uri: photo }} style={{ height: 240 }} />
+                  ) : (
+                    <Camera
+                      style={styles.camera}
+                      ref={(ref) => {
+                        setCamera(ref);
+                      }}
+                    >
+                      <TouchableOpacity
+                        style={styles.cameraBtn}
+                        onPress={takePhoto}
+                      >
+                        <CameraIcon width={24} height={24} />
+                      </TouchableOpacity>
+                    </Camera>
+                  )}
                   <Text style={styles.text}>Завантажте фото</Text>
                 </View>
                 <TextInput
@@ -122,16 +167,23 @@ const styles = StyleSheet.create({
     top: 55,
     left: 16,
   },
-  fileLoader: {
+  camera: {
     marginBottom: 10,
     alignItems: "center",
     justifyContent: "center",
     height: 240,
-    backgroundColor: "#F6F6F6",
-    borderWidth: 1,
-    borderStyle: "solid",
-    borderColor: "E8E8E8",
+    // borderWidth: 1,
+    // borderStyle: "solid",
+    // borderColor: "E8E8E8",
     borderRadius: 8,
+  },
+  cameraBtn: {
+    width: 60,
+    height: 60,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "50%",
+    backgroundColor: "rgba(255, 255, 255, 0.3)",
   },
   text: {
     fontFamily: "Roboto-Regular",

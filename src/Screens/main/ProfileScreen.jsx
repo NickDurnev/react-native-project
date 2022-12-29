@@ -6,7 +6,7 @@ import {
   FlatList,
 } from "react-native";
 import { Container, Title, LogoutBtn, Post } from "../../components";
-import CrossIcon from "../../assets/icons/delete-cross.svg";
+import CrossIcon from "../../../assets/icons/delete-cross.svg";
 
 const halfWindowsWidth = Dimensions.get("window").width / 2;
 
@@ -49,7 +49,7 @@ export const ProfileScreen = ({ navigation }) => {
     <View style={{ flex: 1 }}>
       <ImageBackground
         style={styles.bcgImage}
-        source={require("../../assets/images/PhotoBG.png")}
+        source={require("../../../assets/images/PhotoBG.png")}
       >
         <Container addStyles={styles.container}>
           <View style={styles.avatar}>
