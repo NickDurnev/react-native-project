@@ -1,5 +1,10 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import { RegistrationScreen, LoginScreen, Home } from "../Screens";
+import {
+  RegistrationScreen,
+  LoginScreen,
+  Home,
+  CameraScreen,
+} from "../Screens";
 
 const AuthStack = createStackNavigator();
 
@@ -20,6 +25,11 @@ export const AuthRoute = () => {
         options={{ headerShown: false }}
         name="Home"
         component={Home}
+      />
+      <AuthStack.Screen
+        options={{ headerShown: false }}
+        name="CameraScreen"
+        component={CameraScreen}
       />
     </AuthStack.Navigator>
   );

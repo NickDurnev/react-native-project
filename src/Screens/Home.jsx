@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { PostsScreen, CreatePostScreen, ProfileScreen } from "./main";
 
@@ -17,8 +18,10 @@ export const Home = () => {
         tabBarShowLabel: false,
         headerShown: false,
         tabBarStyle: {
+          height: 60,
           paddingHorizontal: 85,
           paddingTop: 10,
+          paddingBottom: 10,
           backgroundColor: "#FFFFFF",
         },
       }}

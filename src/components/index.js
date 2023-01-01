@@ -7,3 +7,4 @@ export * from "./Post.jsx";
 export * from "./Container.jsx";
 export * from "./LogoutBtn.jsx";
 export * from "./AuthRoute.jsx";
+export * from "./CameraComponent";

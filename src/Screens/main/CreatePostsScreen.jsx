@@ -12,9 +12,16 @@ import {
 } from "react-native";
 import { useState, useEffect } from "react";
 import { Camera } from "expo-camera";
-import { Header, Container, Title, SubmitBtn } from "../../components";
+import * as MediaLibrary from "expo-media-library";
+import * as Location from "expo-location";
+import {
+  Header,
+  Container,
+  Title,
+  SubmitBtn,
+  CameraComponent,
+} from "../../components";
 import GoBackIcon from "../../../assets/icons/arrow-left.svg";
-import CameraIcon from "../../../assets/icons/camera.svg";
 import MapIcon from "../../../assets/icons/map-pin.svg";
 
 const initialState = {
@@ -23,12 +30,20 @@ const initialState = {
   location: "",
 };
 
-export const CreatePostScreen = () => {
+export const CreatePostScreen = ({ navigation, route }) => {
   const [state, setState] = useState(initialState);
   const [isDisable, setIsDisable] = useState(true);
-  const [hasPermission, setHasPermission] = useState(null);
+  const [cameraPermission, setCameraPermission] = useState(null);
+  const [locationPermission, setLocationPermission] = useState(null);
   const [camera, setCamera] = useState(null);
   const [photo, setPhoto] = useState(null);
+
+  useEffect(() => {
+    if (route.params) {
+      console.log(route.params);
+      setPhoto(route.params.photo);
+    }
+  }, [route]);
 
   useEffect(() => {
     if (!Object.values(state).includes("")) {
@@ -38,41 +53,36 @@ export const CreatePostScreen = () => {
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
+      const photo = await Camera.requestCameraPermissionsAsync();
+      const location = await Location.requestForegroundPermissionsAsync();
       await MediaLibrary.requestPermissionsAsync();
 
-      setHasPermission(status === "granted");
+      setCameraPermission(photo.status === "granted");
+      setLocationPermission(location.status === "granted");
     })();
   }, []);
 
-  const takePhoto = async () => {
-    const shot = await camera.takePictureAsync();
-    console.log(shot);
-    setPhoto(shot.uri);
-  };
-
-  console.log(photo);
-
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (isDisable) {
       return;
     }
-    console.log(state);
+    let coords = null;
+    if (locationPermission) {
+      const location = await Location.getCurrentPositionAsync({});
+      coords = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      };
+    }
+    console.log({ ...state, coords });
     setState(initialState);
+    setPhoto(null);
     setIsDisable(true);
   };
 
   const handleKeyboardHide = () => {
     Keyboard.dismiss();
   };
-
-  // if (hasPermission === null) {
-  //   return <View />;
-  // }
-
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
 
   return (
     <View style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
@@ -103,19 +113,11 @@ export const CreatePostScreen = () => {
                   {photo ? (
                     <Image source={{ uri: photo }} style={{ height: 240 }} />
                   ) : (
-                    <Camera
-                      style={styles.camera}
-                      ref={(ref) => {
-                        setCamera(ref);
-                      }}
-                    >
-                      <TouchableOpacity
-                        style={styles.cameraBtn}
-                        onPress={takePhoto}
-                      >
-                        <CameraIcon width={24} height={24} />
-                      </TouchableOpacity>
-                    </Camera>
+                    <CameraComponent
+                      hasPermission={cameraPermission}
+                      setCamera={setCamera}
+                      onPress={() => navigation.navigate("CameraScreen")}
+                    />
                   )}
                   <Text style={styles.text}>Завантажте фото</Text>
                 </View>
@@ -166,24 +168,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 55,
     left: 16,
-  },
-  camera: {
-    marginBottom: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    height: 240,
-    // borderWidth: 1,
-    // borderStyle: "solid",
-    // borderColor: "E8E8E8",
-    borderRadius: 8,
-  },
-  cameraBtn: {
-    width: 60,
-    height: 60,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: "50%",
-    backgroundColor: "rgba(255, 255, 255, 0.3)",
   },
   text: {
     fontFamily: "Roboto-Regular",
