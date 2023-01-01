@@ -43,7 +43,6 @@ const styles = StyleSheet.create({
 });
 
 CameraComponent.propTypes = {
-  hasPermission: PropTypes.oneOfType([PropTypes.bool, PropTypes.oneOf([null])])
-    .isRequired,
+  hasPermission: PropTypes.bool,
   setCamera: PropTypes.func.isRequired,
 };

@@ -25,7 +25,6 @@ import GoBackIcon from "../../../assets/icons/arrow-left.svg";
 import MapIcon from "../../../assets/icons/map-pin.svg";
 
 const initialState = {
-  avatar: "avatar",
   name: "",
   location: "",
 };
@@ -40,7 +39,6 @@ export const CreatePostScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     if (route.params) {
-      console.log(route.params);
       setPhoto(route.params.photo);
     }
   }, [route]);
@@ -74,10 +72,19 @@ export const CreatePostScreen = ({ navigation, route }) => {
         longitude: location.coords.longitude,
       };
     }
+    const data = {
+      ...state,
+      id: Math.random(),
+      photo,
+      coords,
+      comments: [],
+      likes: [],
+    };
     console.log({ ...state, coords });
     setState(initialState);
     setPhoto(null);
     setIsDisable(true);
+    navigation.navigate("DefaultScreen", { data: data });
   };
 
   const handleKeyboardHide = () => {

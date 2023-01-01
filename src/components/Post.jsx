@@ -1,12 +1,20 @@
 import PropTypes from "prop-types";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import CommentIcon from "../../assets/icons/message-circle.svg";
 import ActiveCommentIcon from "../../assets/icons/message-circle-active.svg";
 import LikeIcon from "../../assets/icons/thumbs-up.svg";
 import MapIcon from "../../assets/icons/map-pin.svg";
 
-export const Post = ({ data, marginBottom }) => {
-  const { name, comments, location, likes } = data;
+export const Post = ({ data, showComments, showLocation, marginBottom }) => {
+  const { name, location, photo, likes, comments, coords } = data;
+
+  const checkLocation = () => {
+    if (!coords) {
+      return;
+    }
+    showLocation();
+  };
+
   return (
     <View
       style={{
@@ -14,8 +22,7 @@ export const Post = ({ data, marginBottom }) => {
         marginBottom: marginBottom,
       }}
     >
-      {/* <Image source={{ uri: { image } }} style={styles.image} /> */}
-      <View style={styles.image}></View>
+      <Image source={{ uri: photo }} style={styles.image} />
       <Text style={styles.imageName}>{name}</Text>
       <View>
         <View
@@ -27,19 +34,21 @@ export const Post = ({ data, marginBottom }) => {
         >
           <View style={{ flexDirection: "row" }}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              {comments?.length > 0 ? (
-                <ActiveCommentIcon
-                  width={24}
-                  height={24}
-                  style={{ marginRight: 8 }}
-                />
-              ) : (
-                <CommentIcon
-                  width={24}
-                  height={24}
-                  style={{ marginRight: 8 }}
-                />
-              )}
+              <TouchableOpacity onPress={showComments}>
+                {comments?.length > 0 ? (
+                  <ActiveCommentIcon
+                    width={24}
+                    height={24}
+                    style={{ marginRight: 8 }}
+                  />
+                ) : (
+                  <CommentIcon
+                    width={24}
+                    height={24}
+                    style={{ marginRight: 8 }}
+                  />
+                )}
+              </TouchableOpacity>
               <Text style={styles.iconNumber}>{comments?.length || 0}</Text>
             </View>
             {likes?.length > 0 && (
@@ -50,13 +59,17 @@ export const Post = ({ data, marginBottom }) => {
                   alignItems: "center",
                 }}
               >
-                <LikeIcon width={24} height={24} style={{ marginRight: 8 }} />
+                <TouchableOpacity>
+                  <LikeIcon width={24} height={24} style={{ marginRight: 8 }} />
+                </TouchableOpacity>
                 <Text style={styles.iconNumber}>{likes?.length || 0}</Text>
               </View>
             )}
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <MapIcon width={24} height={24} style={{ marginRight: 8 }} />
+            <TouchableOpacity onPress={checkLocation}>
+              <MapIcon width={24} height={24} style={{ marginRight: 8 }} />
+            </TouchableOpacity>
             <Text style={styles.locationText}>{location}</Text>
           </View>
         </View>
@@ -69,7 +82,7 @@ const styles = StyleSheet.create({
   image: {
     marginBottom: 8,
     height: 240,
-    backgroundColor: "#F6F6F6",
+    // backgroundColor: "#F6F6F6",
     borderRadius: 8,
   },
   imageName: {
@@ -103,5 +116,7 @@ Post.propTypes = {
     location: PropTypes.string,
     comments: PropTypes.arrayOf(PropTypes.object),
   }).isRequired,
+  showComments: PropTypes.func,
+  showLocation: PropTypes.func,
   marginBottom: PropTypes.number.isRequired,
 };

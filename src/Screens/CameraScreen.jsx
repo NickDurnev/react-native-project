@@ -13,7 +13,8 @@ export const CameraScreen = ({ navigation }) => {
 
   const takePhoto = async () => {
     const shot = await camera.takePictureAsync();
-    await MediaLibrary.createAssetAsync(shot.uri);
+    console.log(shot.uri);
+    // await MediaLibrary.createAssetAsync(shot.uri);
     setPhoto(shot.uri);
   };
 

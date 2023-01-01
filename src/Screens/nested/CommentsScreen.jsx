@@ -9,9 +9,9 @@ import {
   Dimensions,
   Keyboard,
 } from "react-native";
-import { Header, Container, Title } from "../components";
-import GoBackIcon from "../../assets/icons/arrow-left.svg";
-import SendIcon from "../../assets/icons/send.svg";
+import { Header, Container, Title } from "../../components";
+import GoBackIcon from "../../../assets/icons/arrow-left.svg";
+import SendIcon from "../../../assets/icons/send.svg";
 
 const comments = [
   {
@@ -48,7 +48,7 @@ const comments = [
 
 const windowsWidth = Dimensions.get("window").width;
 
-export const CommentsScreen = () => {
+export const CommentsScreen = ({ navigation }) => {
   const [comment, setComment] = useState("");
   const [keyboardHeight, setKeyboardHeight] = useState(0);
 
@@ -90,7 +90,7 @@ export const CommentsScreen = () => {
       <Header>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => console.log("Go back")}
+          onPress={() => navigation.navigate("DefaultScreen")}
         >
           <GoBackIcon height={24} width={24} />
         </TouchableOpacity>

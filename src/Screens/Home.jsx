@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { PostsScreen, CreatePostScreen, ProfileScreen } from "./main";
 
