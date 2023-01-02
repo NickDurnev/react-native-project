@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
+import { Provider } from "react-redux";
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import { store } from "./src/redux/store";
 import { StyleSheet, View } from "react-native";
 import { AuthRoute } from "./src/components";
 
@@ -50,12 +52,14 @@ const App = () => {
   }
 
   return (
-    <NavigationContainer>
-      <View style={styles.container} onLayout={onLayoutRootView}>
-        <AuthRoute />
-        <StatusBar style="auto" />
-      </View>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <View style={styles.container} onLayout={onLayoutRootView}>
+          <AuthRoute />
+          <StatusBar style="auto" />
+        </View>
+      </NavigationContainer>
+    </Provider>
   );
 };
 
