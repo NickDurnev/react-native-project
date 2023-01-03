@@ -57,7 +57,7 @@ export const ProfileScreen = ({ navigation }) => {
           </View>
           <LogoutBtn
             addStyles={{ marginLeft: "auto" }}
-            onPress={() => navigation.navigate("Register")}
+            onPress={() => navigation.navigate("Login")}
           />
           <Title addStyles={styles.title}>{profile.name}</Title>
           <FlatList

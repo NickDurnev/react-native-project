@@ -9,8 +9,11 @@ import {
   Platform,
   TouchableWithoutFeedback,
 } from "react-native";
+import { useDispatch } from "react-redux";
 import { Title, Input, TextBtn, SubmitBtn } from "../../components";
 import PlusIcon from "../../../assets/icons/add-plus.svg";
+
+import { authRegister } from "../../redux/auth/authOperations";
 
 const halfWindowsWidth = Dimensions.get("window").width / 2;
 
@@ -24,6 +27,8 @@ export const RegistrationScreen = ({ navigation }) => {
   const [isHiddenPassword, setIsHiddenPassword] = useState(true);
   const [state, setState] = useState(initialState);
   const [isShownKeyboard, setIsShownKeyboard] = useState(false);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -46,7 +51,7 @@ export const RegistrationScreen = ({ navigation }) => {
   }, []);
 
   const handleSubmit = () => {
-    console.log(state);
+    dispatch(authRegister(state));
     setState(initialState);
     navigation.navigate("Home");
   };
@@ -71,7 +76,7 @@ export const RegistrationScreen = ({ navigation }) => {
                 height: isShownKeyboard ? 390 : 550,
               },
               ios: {
-                height: isShownKeyboard ? 620 : 550,
+                height: isShownKeyboard ? 670 : 550,
               },
             }),
           }}
@@ -175,8 +180,8 @@ const styles = StyleSheet.create({
     height: 120,
     width: 120,
     position: "absolute",
-    top: -60,
-    left: halfWindowsWidth - 60,
+    top: -75,
+    left: halfWindowsWidth - 75,
     backgroundColor: "#F6F6F6",
     borderRadius: 16,
   },

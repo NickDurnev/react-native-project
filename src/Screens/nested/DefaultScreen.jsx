@@ -60,7 +60,7 @@ export const DefaultScreen = ({ navigation, route }) => {
         </Title>
         <LogoutBtn
           addStyles={{ position: "absolute", top: 55, right: 16 }}
-          onPress={() => navigation.navigate("Register")}
+          onPress={() => navigation.navigate("Login")}
         />
       </Header>
       <Container addStyles={{ flex: 1 }}>

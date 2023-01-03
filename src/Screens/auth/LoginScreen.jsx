@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import {
   View,
   ImageBackground,
@@ -10,6 +11,8 @@ import {
 } from "react-native";
 import { Title, Input, TextBtn, SubmitBtn } from "../../components";
 
+import { authLogin } from "../../redux/auth/authOperations";
+
 const initialState = {
   email: "",
   password: "",
@@ -19,6 +22,8 @@ export const LoginScreen = ({ navigation }) => {
   const [isHiddenPassword, setIsHiddenPassword] = useState(true);
   const [state, setstate] = useState(initialState);
   const [isShownKeyboard, setIsShownKeyboard] = useState(false);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -41,7 +46,7 @@ export const LoginScreen = ({ navigation }) => {
   }, []);
 
   const handleSubmit = () => {
-    console.log(state);
+    dispatch(authLogin(state));
     setstate(initialState);
     navigation.navigate("Home");
   };
