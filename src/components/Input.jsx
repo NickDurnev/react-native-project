@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
     borderColor: "#E8E8E8",
     textDecorationColor: "red",
     borderRadius: 8,
+    textTransform: "lowercase",
     fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,

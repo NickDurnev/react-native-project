@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { createStackNavigator } from "@react-navigation/stack";
 import {
   RegistrationScreen,
@@ -8,7 +9,8 @@ import {
 
 const AuthStack = createStackNavigator();
 
-export const AuthRoute = () => {
+export const AuthRoute = ({ user }) => {
+  console.log(user);
   return (
     <AuthStack.Navigator initialRouteName="Login">
       <AuthStack.Screen
@@ -21,16 +23,24 @@ export const AuthRoute = () => {
         name="Register"
         component={RegistrationScreen}
       />
-      <AuthStack.Screen
-        options={{ headerShown: false }}
-        name="Home"
-        component={Home}
-      />
-      <AuthStack.Screen
-        options={{ headerShown: false }}
-        name="CameraScreen"
-        component={CameraScreen}
-      />
+      {user && (
+        <>
+          <AuthStack.Screen
+            options={{ headerShown: false }}
+            name="Home"
+            component={Home}
+          />
+          <AuthStack.Screen
+            options={{ headerShown: false }}
+            name="CameraScreen"
+            component={CameraScreen}
+          />
+        </>
+      )}
     </AuthStack.Navigator>
   );
+};
+
+AuthRoute.propTypes = {
+  user: PropTypes.object,
 };

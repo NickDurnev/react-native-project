@@ -8,6 +8,8 @@ import { store } from "./src/redux/store";
 import { StyleSheet, View } from "react-native";
 import { AuthRoute } from "./src/components";
 
+import { auth } from "./src/firebase/config";
+
 const loadFonts = async () => {
   await Font.loadAsync({
     "Roboto-Regular": require("./assets/fonts/Roboto/Roboto-Regular.ttf"),
@@ -18,6 +20,7 @@ const loadFonts = async () => {
 
 const App = () => {
   const [isReady, setIsReady] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     async function prepare() {
@@ -36,13 +39,10 @@ const App = () => {
     prepare();
   }, []);
 
+  auth.onAuthStateChanged((user) => setUser(user));
+
   const onLayoutRootView = useCallback(async () => {
     if (isReady) {
-      // This tells the splash screen to hide immediately! If we call this after
-      // `setIsReady`, then we may see a blank screen while the app is
-      // loading its initial state and rendering its first pixels. So instead,
-      // we hide the splash screen once we know the root view has already
-      // performed layout.
       await SplashScreen.hideAsync();
     }
   }, [isReady]);
@@ -55,7 +55,7 @@ const App = () => {
     <Provider store={store}>
       <NavigationContainer>
         <View style={styles.container} onLayout={onLayoutRootView}>
-          <AuthRoute />
+          <AuthRoute user={user} />
           <StatusBar style="auto" />
         </View>
       </NavigationContainer>
