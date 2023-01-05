@@ -1,10 +1,13 @@
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signOut,
   updateProfile,
 } from "firebase/auth";
 import { auth } from "../../firebase/config";
 import { authSlice } from "./authSlice";
+
+const { updateUser, updateStateChange, authSignOut } = authSlice.actions;
 
 export const authRegister =
   ({ login, email, password }) =>
@@ -14,7 +17,7 @@ export const authRegister =
       await updateProfile(auth.currentUser, { displayName: login });
       const { uid, displayName } = auth.currentUser;
       dispatch(
-        authSlice.actions.updateProfile({
+        updateUser({
           userId: uid,
           nickname: displayName,
         })
@@ -34,4 +37,20 @@ export const authLogin =
     }
   };
 
-export const authLogoOut = () => async (dispatch, getState) => {};
+export const authLogoOut = () => async (dispatch, getState) => {
+  await signOut(auth);
+  dispatch(authSignOut());
+};
+
+export const authStateUserChange = () => async (dispatch, getState) => {
+  await auth.onAuthStateChanged((user) => {
+    if (user) {
+      const userUpdateProfile = {
+        userId: user.uid,
+        nickname: user.displayName,
+      };
+      dispatch(updateUser(userUpdateProfile));
+      dispatch(updateStateChange({ stateChange: true }));
+    }
+  });
+};

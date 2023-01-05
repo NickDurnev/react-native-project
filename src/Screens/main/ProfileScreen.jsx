@@ -5,8 +5,10 @@ import {
   Dimensions,
   FlatList,
 } from "react-native";
+import { useDispatch } from "react-redux";
 import { Container, Title, LogoutBtn, Post } from "../../components";
 import CrossIcon from "../../../assets/icons/delete-cross.svg";
+import { authLogoOut } from "../../redux/auth/authOperations";
 
 const halfWindowsWidth = Dimensions.get("window").width / 2;
 
@@ -45,6 +47,7 @@ const profile = {
 };
 
 export const ProfileScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
   return (
     <View style={{ flex: 1 }}>
       <ImageBackground
@@ -57,7 +60,7 @@ export const ProfileScreen = ({ navigation }) => {
           </View>
           <LogoutBtn
             addStyles={{ marginLeft: "auto" }}
-            onPress={() => navigation.navigate("Login")}
+            onPress={() => dispatch(authLogoOut())}
           />
           <Title addStyles={styles.title}>{profile.name}</Title>
           <FlatList

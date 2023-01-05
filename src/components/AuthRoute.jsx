@@ -9,21 +9,24 @@ import {
 
 const AuthStack = createStackNavigator();
 
-export const AuthRoute = ({ user }) => {
-  console.log(user);
+export const AuthRoute = ({ stateChange }) => {
   return (
     <AuthStack.Navigator initialRouteName="Login">
-      <AuthStack.Screen
-        options={{ headerShown: false }}
-        name="Login"
-        component={LoginScreen}
-      />
-      <AuthStack.Screen
-        options={{ headerShown: false }}
-        name="Register"
-        component={RegistrationScreen}
-      />
-      {user && (
+      {!stateChange && (
+        <>
+          <AuthStack.Screen
+            options={{ headerShown: false }}
+            name="Login"
+            component={LoginScreen}
+          />
+          <AuthStack.Screen
+            options={{ headerShown: false }}
+            name="Register"
+            component={RegistrationScreen}
+          />
+        </>
+      )}
+      {stateChange && (
         <>
           <AuthStack.Screen
             options={{ headerShown: false }}
@@ -42,5 +45,5 @@ export const AuthRoute = ({ user }) => {
 };
 
 AuthRoute.propTypes = {
-  user: PropTypes.object,
+  stateChange: PropTypes.bool.isRequired,
 };

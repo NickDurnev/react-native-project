@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { View, FlatList, StyleSheet, Image, Text } from "react-native";
 import { Header, Container, Title, Post, LogoutBtn } from "../../components";
+import { authLogoOut } from "../../redux/auth/authOperations";
 
 const initialData = [
   {
@@ -41,6 +43,8 @@ const initialData = [
 export const DefaultScreen = ({ navigation, route }) => {
   const [data, setData] = useState([]);
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     if (route.params) {
       setData([...data, route.params.data]);
@@ -60,7 +64,7 @@ export const DefaultScreen = ({ navigation, route }) => {
         </Title>
         <LogoutBtn
           addStyles={{ position: "absolute", top: 55, right: 16 }}
-          onPress={() => navigation.navigate("Login")}
+          onPress={() => dispatch(authLogoOut())}
         />
       </Header>
       <Container addStyles={{ flex: 1 }}>
