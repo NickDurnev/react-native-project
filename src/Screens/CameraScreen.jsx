@@ -3,7 +3,7 @@ import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import { StyleSheet, TouchableOpacity, View, Image } from "react-native";
 
-// icons import
+//# icons import
 import { FontAwesome } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 

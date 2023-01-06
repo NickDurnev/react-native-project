@@ -4,6 +4,7 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
+import Toast from "react-native-toast-message";
 import { auth } from "../../firebase/config";
 import { authSlice } from "./authSlice";
 
@@ -23,7 +24,12 @@ export const authRegister =
         })
       );
     } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: error.message,
+      });
       console.log("error", error.message);
+      console.log(error.code);
     }
   };
 
@@ -51,6 +57,8 @@ export const authStateUserChange = () => async (dispatch, getState) => {
       };
       dispatch(updateUser(userUpdateProfile));
       dispatch(updateStateChange({ stateChange: true }));
+      return;
     }
+    dispatch(updateStateChange({ stateChange: false }));
   });
 };

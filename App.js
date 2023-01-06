@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Provider } from "react-redux";
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import Toast from "react-native-toast-message";
 import { store } from "./src/redux/store";
 import { Main } from "./src/components";
 
@@ -46,6 +47,7 @@ const App = () => {
   return (
     <Provider store={store}>
       <Main onLayoutRootView={onLayoutRootView} />
+      <Toast topOffset={60} />
     </Provider>
   );
 };

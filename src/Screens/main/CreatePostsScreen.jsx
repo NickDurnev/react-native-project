@@ -14,6 +14,9 @@ import { useState, useEffect } from "react";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
+import { customAlphabet } from "nanoid/non-secure";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../../firebase/config";
 import {
   Header,
   Container,
@@ -21,6 +24,8 @@ import {
   SubmitBtn,
   CameraComponent,
 } from "../../components";
+
+//# icons import
 import GoBackIcon from "../../../assets/icons/arrow-left.svg";
 import MapIcon from "../../../assets/icons/map-pin.svg";
 
@@ -60,6 +65,16 @@ export const CreatePostScreen = ({ navigation, route }) => {
     })();
   }, []);
 
+  const uploadPhotoToServer = async () => {
+    const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 10);
+    const response = await fetch(photo);
+    const file = await response.blob();
+    const storageRef = await ref(storage, `postImages/${nanoid()}`);
+    await uploadBytes(storageRef, file);
+    const photoURL = await getDownloadURL(storageRef);
+    console.log(photoURL);
+  };
+
   const handleSubmit = async () => {
     if (isDisable) {
       return;
@@ -81,6 +96,7 @@ export const CreatePostScreen = ({ navigation, route }) => {
       likes: [],
     };
     console.log({ ...state, coords });
+    uploadPhotoToServer();
     setState(initialState);
     setPhoto(null);
     setIsDisable(true);
