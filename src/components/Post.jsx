@@ -1,14 +1,16 @@
 import PropTypes from "prop-types";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import CommentIcon from "../../assets/icons/message-circle.svg";
-import ActiveCommentIcon from "../../assets/icons/message-circle-active.svg";
 import LikeIcon from "../../assets/icons/thumbs-up.svg";
 import MapIcon from "../../assets/icons/map-pin.svg";
 
 export const Post = ({ data, showComments, showLocation, marginBottom }) => {
-  const { name, location, photo, likes, comments, coords } = data;
+  const { name, location, photo, commentsNumber, coords } = data;
+
+  const likes = 0;
 
   const checkLocation = () => {
+    console.log(coords);
     if (!coords) {
       return;
     }
@@ -33,45 +35,47 @@ export const Post = ({ data, showComments, showLocation, marginBottom }) => {
           }}
         >
           <View style={{ flexDirection: "row" }}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <TouchableOpacity onPress={showComments}>
-                {comments?.length > 0 ? (
-                  <ActiveCommentIcon
-                    width={24}
-                    height={24}
-                    style={{ marginRight: 8 }}
-                  />
-                ) : (
-                  <CommentIcon
-                    width={24}
-                    height={24}
-                    style={{ marginRight: 8 }}
-                  />
-                )}
-              </TouchableOpacity>
-              <Text style={styles.iconNumber}>{comments?.length || 0}</Text>
-            </View>
-            {likes?.length > 0 && (
-              <View
-                style={{
-                  marginLeft: 24,
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
-                <TouchableOpacity>
-                  <LikeIcon width={24} height={24} style={{ marginRight: 8 }} />
-                </TouchableOpacity>
-                <Text style={styles.iconNumber}>{likes?.length || 0}</Text>
-              </View>
-            )}
-          </View>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <TouchableOpacity onPress={checkLocation}>
-              <MapIcon width={24} height={24} style={{ marginRight: 8 }} />
+            <TouchableOpacity
+              onPress={showComments}
+              style={{ flexDirection: "row", alignItems: "center" }}
+            >
+              <CommentIcon
+                width={24}
+                height={24}
+                style={
+                  commentsNumber > 0
+                    ? { marginRight: 8, stroke: "#FF6C00" }
+                    : { marginRight: 8, stroke: "#BDBDBD" }
+                }
+              />
+              <Text style={styles.iconNumber}>{commentsNumber}</Text>
             </TouchableOpacity>
-            <Text style={styles.locationText}>{location}</Text>
+            <TouchableOpacity
+              style={{
+                marginLeft: 24,
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <LikeIcon
+                width={24}
+                height={24}
+                style={
+                  likes?.length > 0
+                    ? { marginRight: 8, stroke: "#FF6C00" }
+                    : { marginRight: 8, stroke: "#BDBDBD" }
+                }
+              />
+              <Text style={styles.iconNumber}>{likes.length}</Text>
+            </TouchableOpacity>
           </View>
+          <TouchableOpacity
+            onPress={checkLocation}
+            style={{ flexDirection: "row", alignItems: "center" }}
+          >
+            <MapIcon width={24} height={24} style={{ marginRight: 8 }} />
+            <Text style={styles.locationText}>{location}</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -110,9 +114,9 @@ const styles = StyleSheet.create({
 
 Post.propTypes = {
   data: PropTypes.shape({
-    id: PropTypes.number,
-    image: PropTypes.string,
-    name: PropTypes.string,
+    id: PropTypes.string,
+    photo: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
     location: PropTypes.string,
     comments: PropTypes.arrayOf(PropTypes.object),
   }).isRequired,

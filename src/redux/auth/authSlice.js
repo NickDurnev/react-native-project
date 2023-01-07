@@ -11,6 +11,7 @@ const actions = {
     ...state,
     userId: payload.userId,
     nickname: payload.nickname,
+    email: payload.email,
   }),
   updateStateChange: (state, { payload }) => ({
     ...state,

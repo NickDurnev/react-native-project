@@ -1,55 +1,30 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { View, FlatList, StyleSheet, Image, Text } from "react-native";
+import { collection, getDocs, getCountFromServer } from "firebase/firestore";
 import { Header, Container, Title, Post, LogoutBtn } from "../../components";
+import { db } from "../../firebase/config";
 import { authLogoOut } from "../../redux/auth/authOperations";
-
-const initialData = [
-  {
-    id: 1,
-    name: "Natali Romanova",
-    email: "email@example.com",
-    posts: [
-      {
-        id: 1,
-        image: "../assets/mocks/Posts/Post1.png",
-        name: "Ліс",
-        location: "Ivano-Frankivs'k Region, Ukraine",
-        comments: [
-          {
-            id: 1,
-            text: "Really love your most recent photo. I’ve been trying to capture the same thing for a few months and would love some tips!",
-            date: "09 июня, 2020 | 08:40",
-          },
-        ],
-        likes: [{ id: 3, name: "Vitaliy Bikov", email: "email@example.com" }],
-      },
-      {
-        id: 2,
-        image: "../assets/mocks/Posts/Post2.png",
-        name: "Ліс",
-        location: "Ivano-Frankivs'k Region, Ukraine",
-      },
-      {
-        id: 3,
-        image: "../assets/mocks/Posts/Post2.png",
-        name: "Гори",
-        location: "Ivano-Frankivs'k Region, Ukraine",
-      },
-    ],
-  },
-];
 
 export const DefaultScreen = ({ navigation, route }) => {
   const [data, setData] = useState([]);
 
   const dispatch = useDispatch();
 
+  const getPosts = async () => {
+    const querySnapshot = await getDocs(collection(db, "posts"));
+    querySnapshot.forEach(async (doc) => {
+      const post = doc.data();
+      const commentsColRef = collection(db, "posts", doc.id, "comments");
+      const commentsCloSnapshot = await getCountFromServer(commentsColRef);
+      const commentsNumber = commentsCloSnapshot.data().count;
+      setData([...data, { ...post, id: doc.id, commentsNumber }]);
+    });
+  };
+
   useEffect(() => {
-    if (route.params) {
-      setData([...data, route.params.data]);
-    }
-  }, [route]);
+    getPosts();
+  }, []);
 
   return (
     <View style={{ flex: 1 }}>
@@ -69,22 +44,51 @@ export const DefaultScreen = ({ navigation, route }) => {
       </Header>
       <Container addStyles={{ flex: 1 }}>
         <FlatList
-          data={initialData}
-          renderItem={({ item }) => {
-            const { name, email, posts } = item;
+          data={data}
+          renderItem={({ item, index }) => {
+            const {
+              id,
+              nickname,
+              email,
+              name,
+              location,
+              photo,
+              commentsNumber,
+              coords,
+              userID,
+            } = item;
             return (
-              <View style={{ flex: 1 }}>
+              <View style={styles.post}>
                 <View style={styles.user}>
                   <Image
                     source={require("../../../assets/mocks/Posts/User.png")}
                     style={styles.avatar}
                   />
                   <View style={styles.textWrap}>
-                    <Text style={styles.name}>{name}</Text>
+                    <Text style={styles.name}>{nickname}</Text>
                     <Text style={styles.email}>{email}</Text>
                   </View>
                 </View>
-                <FlatList
+                <Post
+                  data={{ name, location, photo, commentsNumber, coords }}
+                  showComments={() =>
+                    navigation.navigate("CommentsScreen", {
+                      id,
+                      comments,
+                      nickname,
+                      userID,
+                      photo,
+                    })
+                  }
+                  showLocation={() =>
+                    navigation.navigate("MapScreen", {
+                      photo,
+                      coords,
+                    })
+                  }
+                  marginBottom={index === data.length - 1 ? 0 : 32}
+                />
+                {/* <FlatList
                   data={data}
                   renderItem={({ item, index }) => {
                     return (
@@ -104,7 +108,7 @@ export const DefaultScreen = ({ navigation, route }) => {
                     );
                   }}
                   keyExtractor={(item) => item.id}
-                ></FlatList>
+                ></FlatList> */}
               </View>
             );
           }}
@@ -116,6 +120,9 @@ export const DefaultScreen = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
+  post: {
+    flexDirection: "column",
+  },
   user: {
     flexDirection: "row",
     marginBottom: 32,

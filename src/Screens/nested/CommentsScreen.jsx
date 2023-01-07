@@ -8,51 +8,26 @@ import {
   TextInput,
   Dimensions,
   Keyboard,
+  Image,
 } from "react-native";
+import { useSelector } from "react-redux";
+import { collection, addDoc, doc } from "firebase/firestore";
+import { db } from "../../firebase/config";
 import { Header, Container, Title } from "../../components";
+
+//#Icons imports
 import GoBackIcon from "../../../assets/icons/arrow-left.svg";
 import SendIcon from "../../../assets/icons/send.svg";
 
-const comments = [
-  {
-    id: 1,
-    text: "Really love your most recent photo. I’ve been trying to capture the same thing for a few months and would love some tips!",
-    date: "09 июня, 2020 | 08:40",
-  },
-  {
-    id: 2,
-    text: "Really love your most recent photo.",
-    date: "09 июня, 2020 | 08:40",
-  },
-  {
-    id: 3,
-    text: "Very nice",
-    date: "09 июня, 2020 | 08:40",
-  },
-  {
-    id: 4,
-    text: "Very nice",
-    date: "09 июня, 2020 | 08:40",
-  },
-  {
-    id: 5,
-    text: "Very nice.dsdasdasdsadssssssssssssssssssssssssssssssssssssssss.",
-    date: "09 июня, 2020 | 08:40",
-  },
-  {
-    id: 6,
-    text: "Very nice.dsdasdasdsadssssssssssssssssssssssssssssssssssssssss.",
-    date: "09 июня, 2020 | 08:40",
-  },
-];
-
 const windowsWidth = Dimensions.get("window").width;
 
-export const CommentsScreen = ({ navigation }) => {
+export const CommentsScreen = ({ navigation, route }) => {
   const [comment, setComment] = useState("");
   const [keyboardHeight, setKeyboardHeight] = useState(0);
-
   const [isShownKeyboard, setIsShownKeyboard] = useState(false);
+
+  const { id, comments, photo } = route.params;
+  const { userId, nickname, email } = useSelector((state) => state.auth);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -75,15 +50,22 @@ export const CommentsScreen = ({ navigation }) => {
     };
   }, []);
 
-  const handleSubmit = () => {
-    console.log(comment);
-    setComment("");
+  const uploadComment = async (text) => {
+    const docRef = doc(db, "posts", id);
+    const colRef = collection(docRef, "comments");
+    await addDoc(colRef, { nickname, text });
   };
 
-  // const handleKeyboardHide = () => {
-  //   setIsShownKeyboard(false);
-  //   Keyboard.dismiss();
-  // };
+  const handleSubmit = async () => {
+    await uploadComment(comment.value);
+    setComment("");
+    handleKeyboardHide();
+  };
+
+  const handleKeyboardHide = () => {
+    setIsShownKeyboard(false);
+    Keyboard.dismiss();
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -104,8 +86,7 @@ export const CommentsScreen = ({ navigation }) => {
         </Title>
       </Header>
       <Container addStyles={{ paddingBottom: 86, flex: 1 }}>
-        {/* <Image source={{ uri: { image } }} style={styles.image} /> */}
-        <View style={styles.image}></View>
+        <Image source={{ uri: photo }} style={styles.image} />
         <FlatList
           data={comments}
           renderItem={({ item, index }) => {

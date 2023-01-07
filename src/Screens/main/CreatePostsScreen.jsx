@@ -11,12 +11,11 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
-import { customAlphabet } from "nanoid/non-secure";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "../../firebase/config";
+import { uploadPhotoToStorage } from "../../firebase/uploadOperations";
 import {
   Header,
   Container,
@@ -42,6 +41,8 @@ export const CreatePostScreen = ({ navigation, route }) => {
   const [camera, setCamera] = useState(null);
   const [photo, setPhoto] = useState(null);
 
+  const { userId, nickname, email } = useSelector((state) => state.auth);
+
   useEffect(() => {
     if (route.params) {
       setPhoto(route.params.photo);
@@ -65,14 +66,15 @@ export const CreatePostScreen = ({ navigation, route }) => {
     })();
   }, []);
 
-  const uploadPhotoToServer = async () => {
-    const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 10);
-    const response = await fetch(photo);
-    const file = await response.blob();
-    const storageRef = await ref(storage, `postImages/${nanoid()}`);
-    await uploadBytes(storageRef, file);
-    const photoURL = await getDownloadURL(storageRef);
-    console.log(photoURL);
+  const uploadPostToDB = async (post) => {
+    try {
+      await addDoc(collection(db, "posts"), post);
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: error,
+      });
+    }
   };
 
   const handleSubmit = async () => {
@@ -87,19 +89,20 @@ export const CreatePostScreen = ({ navigation, route }) => {
         longitude: location.coords.longitude,
       };
     }
-    const data = {
+    const imageURL = await uploadPhotoToStorage(photo);
+    const post = {
       ...state,
-      id: Math.random(),
-      photo,
+      photo: imageURL,
+      userId: userId,
+      nickname: nickname,
+      email: email,
       coords,
-      comments: [],
-      likes: [],
     };
-    console.log({ ...state, coords });
-    uploadPhotoToServer();
+    const data = await uploadPostToDB(post);
     setState(initialState);
     setPhoto(null);
     setIsDisable(true);
+    navigation.setParams({ photo: null });
     navigation.navigate("DefaultScreen", { data: data });
   };
 

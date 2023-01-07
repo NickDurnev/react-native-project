@@ -7,6 +7,7 @@ import GoBackIcon from "../../../assets/icons/arrow-left.svg";
 export const MapScreen = ({ navigation, route }) => {
   const [showPhoto, setShowPhoto] = useState(true);
   const { coords, photo } = route.params;
+  console.log(coords);
   return (
     <View style={styles.container}>
       <Header>

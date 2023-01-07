@@ -5,6 +5,7 @@ import * as SplashScreen from "expo-splash-screen";
 import Toast from "react-native-toast-message";
 import { store } from "./src/redux/store";
 import { Main } from "./src/components";
+import toastConfig from "./helpers/toastConfig";
 
 const loadFonts = async () => {
   await Font.loadAsync({
@@ -47,7 +48,7 @@ const App = () => {
   return (
     <Provider store={store}>
       <Main onLayoutRootView={onLayoutRootView} />
-      <Toast topOffset={60} />
+      <Toast topOffset={60} config={toastConfig} />
     </Provider>
   );
 };

@@ -71,6 +71,7 @@ export const ProfileScreen = ({ navigation }) => {
                   <Post
                     data={item}
                     marginBottom={index === profile.posts.length - 1 ? 0 : 32}
+                    showComments={() => navigation.navigate("CommentsScreen")}
                   />
                 </View>
               );

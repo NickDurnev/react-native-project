@@ -20,7 +20,7 @@ export const Main = ({ onLayoutRootView }) => {
     <NavigationContainer>
       <View style={styles.container} onLayout={onLayoutRootView}>
         {stateChange !== null && <AuthRoute stateChange={stateChange} />}
-        <StatusBar style="auto" />
+        {/* <StatusBar style="auto" /> */}
       </View>
     </NavigationContainer>
   );
