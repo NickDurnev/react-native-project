@@ -1,17 +1,24 @@
 import PropTypes from "prop-types";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import Toast from "react-native-toast-message";
+
+//#Icons imports
 import CommentIcon from "../../assets/icons/message-circle.svg";
 import LikeIcon from "../../assets/icons/thumbs-up.svg";
 import MapIcon from "../../assets/icons/map-pin.svg";
 
 export const Post = ({ data, showComments, showLocation, marginBottom }) => {
-  const { name, location, photo, commentsNumber, coords } = data;
+  const { name, location, photo, commentsNumber, likesNumber, coords } = data;
 
   const likes = 0;
 
   const checkLocation = () => {
     console.log(coords);
     if (!coords) {
+      Toast.show({
+        type: "info",
+        text1: "Локація не вказана",
+      });
       return;
     }
     showLocation();
@@ -61,7 +68,7 @@ export const Post = ({ data, showComments, showLocation, marginBottom }) => {
                 width={24}
                 height={24}
                 style={
-                  likes?.length > 0
+                  likesNumber > 0
                     ? { marginRight: 8, stroke: "#FF6C00" }
                     : { marginRight: 8, stroke: "#BDBDBD" }
                 }

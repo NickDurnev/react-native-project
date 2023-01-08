@@ -22,6 +22,7 @@ export const authRegister =
         updateUser({
           userId: uid,
           nickname: displayName,
+          email: email,
         })
       );
     } catch (error) {

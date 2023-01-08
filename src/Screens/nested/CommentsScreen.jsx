@@ -11,7 +11,15 @@ import {
   Image,
 } from "react-native";
 import { useSelector } from "react-redux";
-import { collection, addDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  doc,
+  updateDoc,
+  onSnapshot,
+} from "firebase/firestore";
+import moment from "moment";
+import "moment/locale/uk";
 import { db } from "../../firebase/config";
 import { Header, Container, Title } from "../../components";
 
@@ -20,14 +28,16 @@ import GoBackIcon from "../../../assets/icons/arrow-left.svg";
 import SendIcon from "../../../assets/icons/send.svg";
 
 const windowsWidth = Dimensions.get("window").width;
+moment.locale("fr");
 
 export const CommentsScreen = ({ navigation, route }) => {
-  const [comment, setComment] = useState("");
+  const [userComment, setUserComment] = useState("");
+  const [comments, setComments] = useState([]);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const [isShownKeyboard, setIsShownKeyboard] = useState(false);
 
-  const { id, comments, photo } = route.params;
-  const { userId, nickname, email } = useSelector((state) => state.auth);
+  const { id, photo, commentsNumber, prevScreen } = route.params;
+  const { userId, nickname } = useSelector((state) => state.auth);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -50,15 +60,32 @@ export const CommentsScreen = ({ navigation, route }) => {
     };
   }, []);
 
-  const uploadComment = async (text) => {
+  const getComments = async () => {
+    await onSnapshot(collection(db, "posts", id, "comments"), (snapshot) => {
+      const commentsArray = snapshot.docs.map((doc) => {
+        const post = doc.data();
+        return { id: doc.id, ...post };
+      });
+      setComments(commentsArray);
+    });
+  };
+
+  useEffect(() => {
+    getComments();
+  }, []);
+
+  const uploadComment = async ({ text, date }) => {
     const docRef = doc(db, "posts", id);
     const colRef = collection(docRef, "comments");
-    await addDoc(colRef, { nickname, text });
+    await addDoc(colRef, { userId, nickname, text, date });
+    await updateDoc(docRef, { commentsNumber: commentsNumber + 1 });
   };
 
   const handleSubmit = async () => {
-    await uploadComment(comment.value);
-    setComment("");
+    const date = moment().format("DD MMMM, YYYY | HH:mm");
+    const text = userComment.value;
+    await uploadComment({ text, date });
+    setUserComment("");
     handleKeyboardHide();
   };
 
@@ -72,7 +99,7 @@ export const CommentsScreen = ({ navigation, route }) => {
       <Header>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate("DefaultScreen")}
+          onPress={() => navigation.navigate(prevScreen)}
         >
           <GoBackIcon height={24} width={24} />
         </TouchableOpacity>
@@ -87,35 +114,38 @@ export const CommentsScreen = ({ navigation, route }) => {
       </Header>
       <Container addStyles={{ paddingBottom: 86, flex: 1 }}>
         <Image source={{ uri: photo }} style={styles.image} />
-        <FlatList
-          data={comments}
-          renderItem={({ item, index }) => {
-            const isInteger = Number.isInteger(index / 2);
-            const { text, date } = item;
-            return (
-              <View
-                style={{
-                  flexDirection: isInteger ? "row" : "row-reverse",
-                  justifyContent: "space-between",
-                  marginBottom: index === comments.length - 1 ? 0 : 24,
-                }}
-              >
-                <View style={styles.avatar} />
-                <View style={styles.comment}>
-                  <Text style={styles.commentText}>{text}</Text>
-                  <View
-                    style={{
-                      flexDirection: isInteger ? "row-reverse" : "row",
-                    }}
-                  >
-                    <Text style={{ ...styles.commentDate }}>{date}</Text>
+        {comments && (
+          <FlatList
+            data={comments}
+            renderItem={({ item, index }) => {
+              const isInteger = Number.isInteger(index / 2);
+              const { text, date } = item;
+              return (
+                <View
+                  style={{
+                    flexDirection: isInteger ? "row" : "row-reverse",
+                    justifyContent: "space-between",
+                    marginBottom: index === comments.length - 1 ? 0 : 24,
+                  }}
+                >
+                  <View style={styles.avatar} />
+                  <View style={styles.comment}>
+                    <Text style={styles.nicknameText}>{nickname}</Text>
+                    <Text style={styles.commentText}>{text}</Text>
+                    <View
+                      style={{
+                        flexDirection: isInteger ? "row-reverse" : "row",
+                      }}
+                    >
+                      <Text style={{ ...styles.commentDate }}>{date}</Text>
+                    </View>
                   </View>
                 </View>
-              </View>
-            );
-          }}
-          keyExtractor={(item) => item.id}
-        ></FlatList>
+              );
+            }}
+            keyExtractor={(item) => item.id}
+          ></FlatList>
+        )}
       </Container>
       <View
         style={{
@@ -127,9 +157,9 @@ export const CommentsScreen = ({ navigation, route }) => {
         <TextInput
           placeholder={"Коментувати..."}
           placeholderTextColor="#BDBDBD"
-          value={comment}
+          value={userComment}
           onChangeText={(value) =>
-            setComment((prevState) => ({ ...prevState, value }))
+            setUserComment((prevState) => ({ ...prevState, value }))
           }
           style={{ ...styles.input, marginBottom: 16 }}
         />
@@ -173,6 +203,14 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     fontFamily: "Roboto-Regular",
     fontSize: 13,
+    lineHeight: 18,
+    color: "#212121",
+  },
+  nicknameText: {
+    marginBottom: 8,
+    fontFamily: "Roboto-Medium",
+    fontWeight: 500,
+    fontSize: 16,
     lineHeight: 18,
     color: "#212121",
   },

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { View, FlatList, StyleSheet, Image, Text } from "react-native";
-import { collection, getDocs, getCountFromServer } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import { Header, Container, Title, Post, LogoutBtn } from "../../components";
 import { db } from "../../firebase/config";
 import { authLogoOut } from "../../redux/auth/authOperations";
@@ -12,13 +12,12 @@ export const DefaultScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
 
   const getPosts = async () => {
-    const querySnapshot = await getDocs(collection(db, "posts"));
-    querySnapshot.forEach(async (doc) => {
-      const post = doc.data();
-      const commentsColRef = collection(db, "posts", doc.id, "comments");
-      const commentsCloSnapshot = await getCountFromServer(commentsColRef);
-      const commentsNumber = commentsCloSnapshot.data().count;
-      setData([...data, { ...post, id: doc.id, commentsNumber }]);
+    await onSnapshot(collection(db, "posts"), (snapshot) => {
+      const postsArray = snapshot.docs.map((doc) => {
+        const post = doc.data();
+        return { id: doc.id, ...post };
+      });
+      setData(postsArray);
     });
   };
 
@@ -53,7 +52,8 @@ export const DefaultScreen = ({ navigation, route }) => {
               name,
               location,
               photo,
-              commentsNumber,
+              commentsNumber = 0,
+              likesNumber = 0,
               coords,
               userID,
             } = item;
@@ -70,45 +70,31 @@ export const DefaultScreen = ({ navigation, route }) => {
                   </View>
                 </View>
                 <Post
-                  data={{ name, location, photo, commentsNumber, coords }}
+                  data={{
+                    name,
+                    location,
+                    photo,
+                    commentsNumber,
+                    likesNumber,
+                    coords,
+                  }}
                   showComments={() =>
                     navigation.navigate("CommentsScreen", {
                       id,
-                      comments,
-                      nickname,
-                      userID,
                       photo,
+                      commentsNumber,
+                      prevScreen: "DefaultScreen",
                     })
                   }
                   showLocation={() =>
                     navigation.navigate("MapScreen", {
                       photo,
                       coords,
+                      prevScreen: "DefaultScreen",
                     })
                   }
                   marginBottom={index === data.length - 1 ? 0 : 32}
                 />
-                {/* <FlatList
-                  data={data}
-                  renderItem={({ item, index }) => {
-                    return (
-                      <Post
-                        data={item}
-                        showComments={() =>
-                          navigation.navigate("CommentsScreen")
-                        }
-                        showLocation={() =>
-                          navigation.navigate("MapScreen", {
-                            photo: item.photo,
-                            coords: item.coords,
-                          })
-                        }
-                        marginBottom={index === posts.length - 1 ? 0 : 32}
-                      />
-                    );
-                  }}
-                  keyExtractor={(item) => item.id}
-                ></FlatList> */}
               </View>
             );
           }}

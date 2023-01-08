@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Provider } from "react-redux";
+import "expo-dev-menu";
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import Toast from "react-native-toast-message";

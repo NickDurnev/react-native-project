@@ -15,6 +15,9 @@ import { useSelector } from "react-redux";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
+import Toast from "react-native-toast-message";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../../firebase/config";
 import { uploadPhotoToStorage } from "../../firebase/uploadOperations";
 import {
   Header,
@@ -50,7 +53,7 @@ export const CreatePostScreen = ({ navigation, route }) => {
   }, [route]);
 
   useEffect(() => {
-    if (!Object.values(state).includes("")) {
+    if (!Object.values(state).includes("") && photo) {
       setIsDisable(false);
     }
   }, [state]);
@@ -67,12 +70,14 @@ export const CreatePostScreen = ({ navigation, route }) => {
   }, []);
 
   const uploadPostToDB = async (post) => {
+    console.log(post);
     try {
       await addDoc(collection(db, "posts"), post);
     } catch (error) {
+      console.log(error);
       Toast.show({
         type: "error",
-        text1: error,
+        text1: "Щось пішло не так. Спробуйте ще раз",
       });
     }
   };
@@ -96,14 +101,16 @@ export const CreatePostScreen = ({ navigation, route }) => {
       userId: userId,
       nickname: nickname,
       email: email,
+      commentsNumber: 0,
+      likesNumber: 0,
       coords,
     };
-    const data = await uploadPostToDB(post);
+    await uploadPostToDB(post);
     setState(initialState);
     setPhoto(null);
     setIsDisable(true);
     navigation.setParams({ photo: null });
-    navigation.navigate("DefaultScreen", { data: data });
+    navigation.navigate("DefaultScreen");
   };
 
   const handleKeyboardHide = () => {
@@ -115,7 +122,7 @@ export const CreatePostScreen = ({ navigation, route }) => {
       <Header>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => console.log("Go back")}
+          onPress={() => navigation.navigate("DefaultScreen")}
         >
           <GoBackIcon height={24} width={24} />
         </TouchableOpacity>

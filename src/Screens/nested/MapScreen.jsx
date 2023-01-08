@@ -6,12 +6,12 @@ import GoBackIcon from "../../../assets/icons/arrow-left.svg";
 
 export const MapScreen = ({ navigation, route }) => {
   const [showPhoto, setShowPhoto] = useState(true);
-  const { coords, photo } = route.params;
-  console.log(coords);
+  const { coords, photo, prevScreen } = route.params;
+
   return (
     <View style={styles.container}>
       <Header>
-        <TouchableOpacity onPress={() => navigation.navigate("DefaultScreen")}>
+        <TouchableOpacity onPress={() => navigation.navigate(prevScreen)}>
           <GoBackIcon height={24} width={24} />
         </TouchableOpacity>
       </Header>

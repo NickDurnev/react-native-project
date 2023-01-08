@@ -1,8 +1,6 @@
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { collection, addDoc } from "firebase/firestore";
 import { customAlphabet } from "nanoid/non-secure";
-import Toast from "react-native-toast-message";
-import { storage, db } from "./config";
+import { storage } from "./config";
 
 export const uploadPhotoToStorage = async (photo) => {
   const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 10);
