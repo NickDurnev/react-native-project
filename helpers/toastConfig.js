@@ -9,6 +9,7 @@ const toastConfig = {
       {...props}
       style={{
         borderRadius: 5,
+        borderLeftColor: "#99E95A",
         backgroundColor: "#99E95A",
       }}
       text1Style={{
@@ -24,6 +25,7 @@ const toastConfig = {
       {...props}
       style={{
         borderRadius: 5,
+        borderLeftColor: "#EF6625",
         backgroundColor: "#EF6625",
       }}
       text1Style={{
@@ -40,6 +42,7 @@ const toastConfig = {
       {...props}
       style={{
         borderRadius: 5,
+        borderLeftColor: "#57DEEF",
         backgroundColor: "#57DEEF",
       }}
       text1Style={{

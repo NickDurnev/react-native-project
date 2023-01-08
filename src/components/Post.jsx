@@ -1,6 +1,8 @@
 import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import Toast from "react-native-toast-message";
+import { uploadLikeToDB } from "../firebase/storageOperations";
 
 //#Icons imports
 import CommentIcon from "../../assets/icons/message-circle.svg";
@@ -8,9 +10,10 @@ import LikeIcon from "../../assets/icons/thumbs-up.svg";
 import MapIcon from "../../assets/icons/map-pin.svg";
 
 export const Post = ({ data, showComments, showLocation, marginBottom }) => {
-  const { name, location, photo, commentsNumber, likesNumber, coords } = data;
+  const { id, name, location, photo, commentsNumber, likesNumber, coords } =
+    data;
 
-  const likes = 0;
+  const { userId, nickname } = useSelector((state) => state.auth);
 
   const checkLocation = () => {
     console.log(coords);
@@ -23,6 +26,8 @@ export const Post = ({ data, showComments, showLocation, marginBottom }) => {
     }
     showLocation();
   };
+
+  // const addLikeToPost = () => {};
 
   return (
     <View
@@ -58,6 +63,7 @@ export const Post = ({ data, showComments, showLocation, marginBottom }) => {
               <Text style={styles.iconNumber}>{commentsNumber}</Text>
             </TouchableOpacity>
             <TouchableOpacity
+              onPress={() => uploadLikeToDB(id, userId, nickname, likesNumber)}
               style={{
                 marginLeft: 24,
                 flexDirection: "row",
@@ -73,7 +79,7 @@ export const Post = ({ data, showComments, showLocation, marginBottom }) => {
                     : { marginRight: 8, stroke: "#BDBDBD" }
                 }
               />
-              <Text style={styles.iconNumber}>{likes.length}</Text>
+              <Text style={styles.iconNumber}>{likesNumber}</Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity
@@ -93,7 +99,6 @@ const styles = StyleSheet.create({
   image: {
     marginBottom: 8,
     height: 240,
-    // backgroundColor: "#F6F6F6",
     borderRadius: 8,
   },
   imageName: {

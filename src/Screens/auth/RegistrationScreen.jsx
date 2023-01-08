@@ -7,10 +7,17 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   Platform,
+  Image,
   TouchableWithoutFeedback,
+  TouchableOpacity,
 } from "react-native";
+import * as ImagePicker from "expo-image-picker";
 import { useDispatch } from "react-redux";
+import { uploadUserAvatarsToStorage } from "../../firebase/storageOperations";
 import { Title, Input, TextBtn, SubmitBtn } from "../../components";
+
+//#Icons imports
+import CrossIcon from "../../../assets/icons/delete-cross.svg";
 import PlusIcon from "../../../assets/icons/add-plus.svg";
 
 import { authRegister } from "../../redux/auth/authOperations";
@@ -24,6 +31,7 @@ const initialState = {
 };
 
 export const RegistrationScreen = ({ navigation }) => {
+  const [image, setImage] = useState(null);
   const [isHiddenPassword, setIsHiddenPassword] = useState(true);
   const [state, setState] = useState(initialState);
   const [isShownKeyboard, setIsShownKeyboard] = useState(false);
@@ -50,10 +58,28 @@ export const RegistrationScreen = ({ navigation }) => {
     };
   }, []);
 
-  const handleSubmit = () => {
-    dispatch(authRegister(state));
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!image) {
+      dispatch(authRegister(state));
+      setState(initialState);
+      return;
+    }
+    const imageURL = await uploadUserAvatarsToStorage(image, state.email);
+    dispatch(authRegister({ ...state, imageURL }));
     setState(initialState);
-    navigation.navigate("Home");
   };
 
   const handleKeyboardHide = () => {
@@ -84,9 +110,32 @@ export const RegistrationScreen = ({ navigation }) => {
           <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : "height"}
           >
-            <View style={styles.avatar}>
-              <PlusIcon style={styles.avatarIcon} width={25} height={25} />
-            </View>
+            <TouchableOpacity onPress={pickImage}>
+              {image ? (
+                <>
+                  <Image source={{ uri: image }} style={styles.avatar} />
+                  <CrossIcon
+                    style={{
+                      ...styles.avatarIcon,
+                      right: halfWindowsWidth - 96,
+                      bottom: -35,
+                    }}
+                    width={40}
+                    height={40}
+                  />
+                </>
+              ) : (
+                <>
+                  <View
+                    style={{
+                      ...styles.avatar,
+                      backgroundColor: "#F6F6F6",
+                    }}
+                  />
+                  <PlusIcon style={styles.avatarIcon} width={25} height={25} />
+                </>
+              )}
+            </TouchableOpacity>
             <Title
               addStyles={{
                 marginTop: 95,
@@ -182,12 +231,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -75,
     left: halfWindowsWidth - 75,
-    backgroundColor: "#F6F6F6",
     borderRadius: 16,
   },
   avatarIcon: {
     position: "absolute",
-    bottom: 15,
-    right: -12,
+    bottom: -30,
+    right: halfWindowsWidth - 90,
   },
 });

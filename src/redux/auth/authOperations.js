@@ -12,17 +12,23 @@ import authErrorHandler from "./authErrorHandler";
 const { updateUser, updateStateChange, authSignOut } = authSlice.actions;
 
 export const authRegister =
-  ({ login, email, password }) =>
+  ({ login, email, password, imageURL = "none" }) =>
   async (dispatch, getState) => {
+    console.log(imageURL);
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(auth.currentUser, { displayName: login });
-      const { uid, displayName } = auth.currentUser;
+      await updateProfile(auth.currentUser, {
+        displayName: login,
+        avatarURL: imageURL,
+      });
+      const { uid, displayName, avatarURL } = auth.currentUser;
+      console.log(avatarURL);
       dispatch(
         updateUser({
           userId: uid,
           nickname: displayName,
           email: email,
+          avatarURL: avatarURL,
         })
       );
     } catch (error) {
@@ -63,6 +69,7 @@ export const authStateUserChange = () => async (dispatch, getState) => {
         userId: user.uid,
         nickname: user.displayName,
         email: user.email,
+        avatarURL: user.avatarURL,
       };
       dispatch(updateUser(userUpdateProfile));
       dispatch(updateStateChange({ stateChange: true }));

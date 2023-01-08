@@ -15,10 +15,10 @@ import { useSelector } from "react-redux";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
-import Toast from "react-native-toast-message";
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "../../firebase/config";
-import { uploadPhotoToStorage } from "../../firebase/uploadOperations";
+import {
+  uploadPhotoToStorage,
+  uploadPostToDB,
+} from "../../firebase/storageOperations";
 import {
   Header,
   Container,
@@ -68,19 +68,6 @@ export const CreatePostScreen = ({ navigation, route }) => {
       setLocationPermission(location.status === "granted");
     })();
   }, []);
-
-  const uploadPostToDB = async (post) => {
-    console.log(post);
-    try {
-      await addDoc(collection(db, "posts"), post);
-    } catch (error) {
-      console.log(error);
-      Toast.show({
-        type: "error",
-        text1: "Щось пішло не так. Спробуйте ще раз",
-      });
-    }
-  };
 
   const handleSubmit = async () => {
     if (isDisable) {

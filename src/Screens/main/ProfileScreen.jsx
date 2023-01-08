@@ -6,18 +6,30 @@ import {
   StyleSheet,
   Dimensions,
   FlatList,
+  TouchableOpacity,
 } from "react-native";
 import { collection, where, onSnapshot, query } from "firebase/firestore";
+import * as ImagePicker from "expo-image-picker";
 import { db } from "../../firebase/config";
+import { uploadUserAvatarsToStorage } from "../../firebase/storageOperations";
+import { authSlice } from "../../redux/auth/authSlice";
 import { Container, Title, LogoutBtn, Post } from "../../components";
-import CrossIcon from "../../../assets/icons/delete-cross.svg";
 import { authLogoOut } from "../../redux/auth/authOperations";
 
+//#Icons imports
+import CrossIcon from "../../../assets/icons/delete-cross.svg";
+import PlusIcon from "../../../assets/icons/add-plus.svg";
+
 const halfWindowsWidth = Dimensions.get("window").width / 2;
+const { changeAvatar } = authSlice.actions;
 
 export const ProfileScreen = ({ navigation }) => {
   const [data, setData] = useState([]);
-  const { userId, nickname } = useSelector((state) => state.auth);
+  const { userId, nickname, email, avatarURL } = useSelector(
+    (state) => state.auth
+  );
+
+  const dispatch = useDispatch();
 
   const getUserPosts = async () => {
     const q = await query(
@@ -37,7 +49,21 @@ export const ProfileScreen = ({ navigation }) => {
     getUserPosts();
   }, []);
 
-  const dispatch = useDispatch();
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const image = result.assets[0].uri;
+      const newAvatarURL = await uploadUserAvatarsToStorage(image, email);
+      dispatch(changeAvatar({ avatarURL: newAvatarURL }));
+    }
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <ImageBackground
@@ -45,9 +71,32 @@ export const ProfileScreen = ({ navigation }) => {
         source={require("../../../assets/images/PhotoBG.png")}
       >
         <Container addStyles={styles.container}>
-          <View style={styles.avatar}>
-            <CrossIcon style={styles.avatarIcon} width={35} height={35} />
-          </View>
+          <TouchableOpacity onPress={pickImage}>
+            {avatarURL ? (
+              <>
+                <Image source={{ uri: avatarURL }} style={styles.avatar} />
+                <CrossIcon
+                  style={{
+                    ...styles.avatarIcon,
+                    right: halfWindowsWidth - 96,
+                    bottom: -35,
+                  }}
+                  width={40}
+                  height={40}
+                />
+              </>
+            ) : (
+              <>
+                <View
+                  style={{
+                    ...styles.avatar,
+                    backgroundColor: "#F6F6F6",
+                  }}
+                />
+                <PlusIcon style={styles.avatarIcon} width={25} height={25} />
+              </>
+            )}
+          </TouchableOpacity>
           <LogoutBtn
             addStyles={{ marginLeft: "auto" }}
             onPress={() => dispatch(authLogoOut())}
@@ -126,15 +175,14 @@ const styles = StyleSheet.create({
     height: 120,
     width: 120,
     position: "absolute",
-    top: -60,
-    left: halfWindowsWidth - 60,
-    backgroundColor: "#F6F6F6",
+    top: -75,
+    left: halfWindowsWidth - 75,
     borderRadius: 16,
   },
   avatarIcon: {
     position: "absolute",
-    bottom: 10,
-    right: -17,
+    bottom: -30,
+    right: halfWindowsWidth - 90,
   },
   title: {
     marginTop: 50,

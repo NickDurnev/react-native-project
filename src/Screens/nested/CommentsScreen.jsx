@@ -11,15 +11,10 @@ import {
   Image,
 } from "react-native";
 import { useSelector } from "react-redux";
-import {
-  collection,
-  addDoc,
-  doc,
-  updateDoc,
-  onSnapshot,
-} from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import moment from "moment";
 import "moment/locale/uk";
+import { uploadCommentToDB } from "../../firebase/storageOperations";
 import { db } from "../../firebase/config";
 import { Header, Container, Title } from "../../components";
 
@@ -74,17 +69,17 @@ export const CommentsScreen = ({ navigation, route }) => {
     getComments();
   }, []);
 
-  const uploadComment = async ({ text, date }) => {
-    const docRef = doc(db, "posts", id);
-    const colRef = collection(docRef, "comments");
-    await addDoc(colRef, { userId, nickname, text, date });
-    await updateDoc(docRef, { commentsNumber: commentsNumber + 1 });
-  };
-
   const handleSubmit = async () => {
     const date = moment().format("DD MMMM, YYYY | HH:mm");
     const text = userComment.value;
-    await uploadComment({ text, date });
+    await uploadCommentToDB({
+      id,
+      userId,
+      nickname,
+      commentsNumber,
+      text,
+      date,
+    });
     setUserComment("");
     handleKeyboardHide();
   };

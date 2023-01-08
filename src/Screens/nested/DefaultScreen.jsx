@@ -55,7 +55,6 @@ export const DefaultScreen = ({ navigation, route }) => {
               commentsNumber = 0,
               likesNumber = 0,
               coords,
-              userID,
             } = item;
             return (
               <View style={styles.post}>
@@ -71,6 +70,7 @@ export const DefaultScreen = ({ navigation, route }) => {
                 </View>
                 <Post
                   data={{
+                    id,
                     name,
                     location,
                     photo,
