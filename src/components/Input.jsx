@@ -11,6 +11,7 @@ export const Input = ({ isSecure, placeholder, position, onChange, value }) => {
       onChangeText={onChange}
       onFocus={() => setFocused(true)}
       onBlur={() => setFocused(false)}
+      autoCapitalize="none"
       placeholder={placeholder}
       placeholderTextColor="#BDBDBD"
       secureTextEntry={isSecure}

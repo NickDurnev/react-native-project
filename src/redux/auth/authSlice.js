@@ -7,24 +7,25 @@ const initialState = {
 };
 
 const actions = {
-  updateUser: (state, { payload }) => ({
-    ...state,
-    userId: payload.userId,
-    nickname: payload.nickname,
-    email: payload.email,
-    avatarURL: payload.avatarURL,
-  }),
+  updateUser: (state, { payload }) => {
+    console.log(payload);
+    return {
+      ...state,
+      userId: payload.userId,
+      nickname: payload.nickname,
+      email: payload.email,
+      avatarURL: payload.avatarURL,
+    };
+  },
   updateStateChange: (state, { payload }) => ({
     ...state,
     stateChange: payload.stateChange,
   }),
   authSignOut: () => ({ ...initialState, stateChange: false }),
-  changeAvatar:
-    () =>
-    (state, { payload }) => ({
-      ...state,
-      avatarURL: payload.avatarURL,
-    }),
+  changeAvatar: (state, { payload }) => ({
+    ...state,
+    avatarURL: payload.avatarURL,
+  }),
 };
 
 export const authSlice = createSlice({

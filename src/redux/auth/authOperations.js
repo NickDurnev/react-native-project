@@ -9,26 +9,25 @@ import { auth } from "../../firebase/config";
 import { authSlice } from "./authSlice";
 import authErrorHandler from "./authErrorHandler";
 
-const { updateUser, updateStateChange, authSignOut } = authSlice.actions;
+const { updateUser, updateStateChange, authSignOut, changeAvatar } =
+  authSlice.actions;
 
 export const authRegister =
-  ({ login, email, password, imageURL = "none" }) =>
+  ({ login, email, password, imageURL = null }) =>
   async (dispatch, getState) => {
-    console.log(imageURL);
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(auth.currentUser, {
         displayName: login,
-        avatarURL: imageURL,
+        photoURL: imageURL,
       });
-      const { uid, displayName, avatarURL } = auth.currentUser;
-      console.log(avatarURL);
+      const { uid, displayName, photoURL } = auth.currentUser;
       dispatch(
         updateUser({
           userId: uid,
           nickname: displayName,
           email: email,
-          avatarURL: avatarURL,
+          avatarURL: photoURL,
         })
       );
     } catch (error) {
@@ -64,12 +63,13 @@ export const authLogoOut = () => async (dispatch, getState) => {
 
 export const authStateUserChange = () => async (dispatch, getState) => {
   await auth.onAuthStateChanged((user) => {
+    console.log(user);
     if (user) {
       const userUpdateProfile = {
         userId: user.uid,
         nickname: user.displayName,
         email: user.email,
-        avatarURL: user.avatarURL,
+        avatarURL: user.photoURL,
       };
       dispatch(updateUser(userUpdateProfile));
       dispatch(updateStateChange({ stateChange: true }));
@@ -78,3 +78,16 @@ export const authStateUserChange = () => async (dispatch, getState) => {
     dispatch(updateStateChange({ stateChange: false }));
   });
 };
+
+export const changeUserPhotoURL =
+  ({ newAvatarURL }) =>
+  async (dispatch, getState) => {
+    try {
+      await updateProfile(auth.currentUser, {
+        photoURL: newAvatarURL,
+      });
+      dispatch(changeAvatar({ avatarURL: newAvatarURL }));
+    } catch (error) {
+      console.log(error.code);
+    }
+  };

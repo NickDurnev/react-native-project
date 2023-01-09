@@ -27,8 +27,6 @@ export const Post = ({ data, showComments, showLocation, marginBottom }) => {
     showLocation();
   };
 
-  // const addLikeToPost = () => {};
-
   return (
     <View
       style={{

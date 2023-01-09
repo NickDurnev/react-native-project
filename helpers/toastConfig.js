@@ -13,7 +13,8 @@ const toastConfig = {
         backgroundColor: "#99E95A",
       }}
       text1Style={{
-        fontSize: 20,
+        width: "80%",
+        fontSize: 16,
         fontWeight: "400",
         textAlign: "center",
         color: "#FAFAFA",
@@ -27,9 +28,11 @@ const toastConfig = {
         borderRadius: 5,
         borderLeftColor: "#EF6625",
         backgroundColor: "#EF6625",
+        height: 50,
+        overflow: "visible",
       }}
       text1Style={{
-        fontSize: 20,
+        fontSize: 16,
         fontWeight: "400",
         textAlign: "center",
         color: "#FAFAFA",
@@ -46,7 +49,7 @@ const toastConfig = {
         backgroundColor: "#57DEEF",
       }}
       text1Style={{
-        fontSize: 20,
+        fontSize: 16,
         fontWeight: "400",
         textAlign: "center",
         color: "#FAFAFA",

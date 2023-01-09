@@ -52,6 +52,7 @@ export const DefaultScreen = ({ navigation, route }) => {
               name,
               location,
               photo,
+              userAvatar,
               commentsNumber = 0,
               likesNumber = 0,
               coords,
@@ -59,10 +60,16 @@ export const DefaultScreen = ({ navigation, route }) => {
             return (
               <View style={styles.post}>
                 <View style={styles.user}>
-                  <Image
-                    source={require("../../../assets/mocks/Posts/User.png")}
-                    style={styles.avatar}
-                  />
+                  {userAvatar ? (
+                    <Image source={{ uri: userAvatar }} style={styles.avatar} />
+                  ) : (
+                    <View
+                      style={{
+                        ...styles.avatar,
+                        backgroundColor: "#F6F6F6",
+                      }}
+                    />
+                  )}
                   <View style={styles.textWrap}>
                     <Text style={styles.name}>{nickname}</Text>
                     <Text style={styles.email}>{email}</Text>

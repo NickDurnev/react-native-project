@@ -7,14 +7,21 @@ import {
   Dimensions,
   FlatList,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import { collection, where, onSnapshot, query } from "firebase/firestore";
 import * as ImagePicker from "expo-image-picker";
 import { db } from "../../firebase/config";
-import { uploadUserAvatarsToStorage } from "../../firebase/storageOperations";
+import {
+  uploadUserAvatarsToStorage,
+  deleteFileFromStorage,
+} from "../../firebase/storageOperations";
 import { authSlice } from "../../redux/auth/authSlice";
 import { Container, Title, LogoutBtn, Post } from "../../components";
-import { authLogoOut } from "../../redux/auth/authOperations";
+import {
+  authLogoOut,
+  changeUserPhotoURL,
+} from "../../redux/auth/authOperations";
 
 //#Icons imports
 import CrossIcon from "../../../assets/icons/delete-cross.svg";
@@ -24,6 +31,7 @@ const halfWindowsWidth = Dimensions.get("window").width / 2;
 const { changeAvatar } = authSlice.actions;
 
 export const ProfileScreen = ({ navigation }) => {
+  const [newAvatarURL, setAvatarURL] = useState(null);
   const [data, setData] = useState([]);
   const { userId, nickname, email, avatarURL } = useSelector(
     (state) => state.auth
@@ -58,10 +66,19 @@ export const ProfileScreen = ({ navigation }) => {
     });
 
     if (!result.canceled) {
-      const image = result.assets[0].uri;
-      const newAvatarURL = await uploadUserAvatarsToStorage(image, email);
-      dispatch(changeAvatar({ avatarURL: newAvatarURL }));
+      return result.assets[0].uri;
     }
+  };
+
+  const changeUserAvatar = async () => {
+    const image = await pickImage();
+    if (!image) {
+      return;
+    }
+    await deleteFileFromStorage(email);
+    const newAvatarURL = await uploadUserAvatarsToStorage(image, email);
+    dispatch(changeUserPhotoURL({ newAvatarURL }));
+    setAvatarURL(newAvatarURL);
   };
 
   return (
@@ -71,10 +88,13 @@ export const ProfileScreen = ({ navigation }) => {
         source={require("../../../assets/images/PhotoBG.png")}
       >
         <Container addStyles={styles.container}>
-          <TouchableOpacity onPress={pickImage}>
+          <TouchableOpacity onPress={changeUserAvatar}>
             {avatarURL ? (
               <>
-                <Image source={{ uri: avatarURL }} style={styles.avatar} />
+                <Image
+                  source={{ uri: newAvatarURL ? newAvatarURL : avatarURL }}
+                  style={styles.avatar}
+                />
                 <CrossIcon
                   style={{
                     ...styles.avatarIcon,
@@ -107,8 +127,6 @@ export const ProfileScreen = ({ navigation }) => {
             renderItem={({ item, index }) => {
               const {
                 id,
-                nickname,
-                email,
                 name,
                 location,
                 photo,

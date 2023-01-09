@@ -1,4 +1,9 @@
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 import {
   addDoc,
   updateDoc,
@@ -7,36 +12,64 @@ import {
   collection,
   where,
   query,
-  getDoc,
 } from "firebase/firestore";
 import Toast from "react-native-toast-message";
 import { customAlphabet } from "nanoid/non-secure";
 import { storage, db } from "./config";
 
 export const uploadPhotoToStorage = async (photo) => {
-  const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 10);
-  const response = await fetch(photo);
-  const file = await response.blob();
-  const storageRef = await ref(storage, `postImages/${nanoid()}`);
-  await uploadBytes(storageRef, file);
-  const photoURL = await getDownloadURL(storageRef);
-  return photoURL;
+  try {
+    const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 10);
+    const response = await fetch(photo);
+    const file = await response.blob();
+    const storageRef = await ref(storage, `postImages/${nanoid()}`);
+    await uploadBytes(storageRef, file);
+    const photoURL = await getDownloadURL(storageRef);
+    return photoURL;
+  } catch (error) {
+    console.log(error.message);
+    Toast.show({
+      type: "error",
+      text1: "Щось пішло не так. Спробуйте ще раз",
+    });
+  }
 };
 
 export const uploadUserAvatarsToStorage = async (photo, email) => {
-  const response = await fetch(photo);
-  const file = await response.blob();
-  const storageRef = await ref(storage, `usersAvatars/${email}`);
-  await uploadBytes(storageRef, file);
-  const photoURL = await getDownloadURL(storageRef);
-  return photoURL;
+  try {
+    const response = await fetch(photo);
+    const file = await response.blob();
+    const storageRef = await ref(storage, `usersAvatars/${email}`);
+    await uploadBytes(storageRef, file);
+    const photoURL = await getDownloadURL(storageRef);
+    return photoURL;
+  } catch (error) {
+    console.log(error);
+    Toast.show({
+      type: "error",
+      text1: "Щось пішло не так. Спробуйте ще раз",
+    });
+  }
+};
+
+export const deleteFileFromStorage = async (name) => {
+  const fileRef = ref(storage, `usersAvatars/${name}`);
+  if (!fileRef) {
+    return;
+  }
+  try {
+    await deleteObject(fileRef);
+    return true;
+  } catch (error) {
+    console.log(error.message);
+  }
 };
 
 export const uploadPostToDB = async (post) => {
   try {
     await addDoc(collection(db, "posts"), post);
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     Toast.show({
       type: "error",
       text1: "Щось пішло не так. Спробуйте ще раз",

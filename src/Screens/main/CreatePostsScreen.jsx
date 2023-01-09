@@ -44,7 +44,9 @@ export const CreatePostScreen = ({ navigation, route }) => {
   const [camera, setCamera] = useState(null);
   const [photo, setPhoto] = useState(null);
 
-  const { userId, nickname, email } = useSelector((state) => state.auth);
+  const { userId, nickname, email, avatarURL } = useSelector(
+    (state) => state.auth
+  );
 
   useEffect(() => {
     if (route.params) {
@@ -86,6 +88,7 @@ export const CreatePostScreen = ({ navigation, route }) => {
       ...state,
       photo: imageURL,
       userId: userId,
+      userAvatar: avatarURL,
       nickname: nickname,
       email: email,
       commentsNumber: 0,
@@ -129,6 +132,7 @@ export const CreatePostScreen = ({ navigation, route }) => {
               <KeyboardAvoidingView
                 behavior={Platform.OS == "ios" ? "padding" : "height"}
               >
+                #TODO: Add ImagePicker
                 <View style={{ marginBottom: 32 }}>
                   {photo ? (
                     <Image source={{ uri: photo }} style={{ height: 240 }} />
