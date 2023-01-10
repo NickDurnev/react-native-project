@@ -16,7 +16,6 @@ import {
   uploadUserAvatarsToStorage,
   deleteFileFromStorage,
 } from "../../firebase/storageOperations";
-import { authSlice } from "../../redux/auth/authSlice";
 import { Container, Title, LogoutBtn, Post } from "../../components";
 import {
   authLogoOut,
@@ -28,7 +27,6 @@ import CrossIcon from "../../../assets/icons/delete-cross.svg";
 import PlusIcon from "../../../assets/icons/add-plus.svg";
 
 const halfWindowsWidth = Dimensions.get("window").width / 2;
-const { changeAvatar } = authSlice.actions;
 
 export const ProfileScreen = ({ navigation }) => {
   const [newAvatarURL, setAvatarURL] = useState(null);

@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
+import Toast from "react-native-toast-message";
 import {
   uploadPhotoToStorage,
   uploadPostToDB,
@@ -24,12 +25,15 @@ import {
   Container,
   Title,
   SubmitBtn,
-  CameraComponent,
+  ModalView,
+  PhotoPicker,
 } from "../../components";
 
 //# icons import
 import GoBackIcon from "../../../assets/icons/arrow-left.svg";
 import MapIcon from "../../../assets/icons/map-pin.svg";
+import CameraIcon from "../../../assets/icons/camera.svg";
+import CrossIcon from "../../../assets/icons/delete-cross.svg";
 
 const initialState = {
   name: "",
@@ -41,6 +45,7 @@ export const CreatePostScreen = ({ navigation, route }) => {
   const [isDisable, setIsDisable] = useState(true);
   const [cameraPermission, setCameraPermission] = useState(null);
   const [locationPermission, setLocationPermission] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
   const [camera, setCamera] = useState(null);
   const [photo, setPhoto] = useState(null);
 
@@ -103,7 +108,26 @@ export const CreatePostScreen = ({ navigation, route }) => {
     navigation.navigate("DefaultScreen");
   };
 
+  const openModal = () => {
+    console.log(cameraPermission);
+    if (!cameraPermission) {
+      Toast.show({
+        type: "info",
+        text1: "Дайте повноваження для",
+        text2: "використання камери",
+      });
+      return;
+    }
+    setModalVisible(true);
+  };
+
+  const openCamera = () => {
+    setModalVisible(false);
+    navigation.navigate("CameraScreen", { prevScreen: "Create" });
+  };
+
   const handleKeyboardHide = () => {
+    setModalVisible(false);
     Keyboard.dismiss();
   };
 
@@ -132,18 +156,28 @@ export const CreatePostScreen = ({ navigation, route }) => {
               <KeyboardAvoidingView
                 behavior={Platform.OS == "ios" ? "padding" : "height"}
               >
-                #TODO: Add ImagePicker
                 <View style={{ marginBottom: 32 }}>
                   {photo ? (
-                    <Image source={{ uri: photo }} style={{ height: 240 }} />
+                    <View>
+                      <Image source={{ uri: photo }} style={{ height: 240 }} />
+                      <TouchableOpacity
+                        style={styles.crossButton}
+                        onPress={() => setPhoto(null)}
+                      >
+                        <CrossIcon width={50} height={50} />
+                      </TouchableOpacity>
+                    </View>
                   ) : (
-                    <CameraComponent
-                      hasPermission={cameraPermission}
-                      setCamera={setCamera}
-                      onPress={() => navigation.navigate("CameraScreen")}
-                    />
+                    <View style={styles.imageInput}>
+                      <TouchableOpacity
+                        style={styles.cameraBtn}
+                        onPress={openModal}
+                      >
+                        <CameraIcon width={24} height={24} />
+                      </TouchableOpacity>
+                      <Text style={styles.text}>Завантажте фото</Text>
+                    </View>
                   )}
-                  <Text style={styles.text}>Завантажте фото</Text>
                 </View>
                 <TextInput
                   placeholder={"Назва..."}
@@ -180,6 +214,16 @@ export const CreatePostScreen = ({ navigation, route }) => {
                 />
               </KeyboardAvoidingView>
             </View>
+            <ModalView
+              modalVisible={modalVisible}
+              setModalVisible={setModalVisible}
+            >
+              <PhotoPicker
+                setPhoto={(photo) => setPhoto(photo)}
+                setModalVisible={setModalVisible}
+                openCamera={openCamera}
+              />
+            </ModalView>
           </View>
         </TouchableWithoutFeedback>
       </Container>
@@ -199,6 +243,15 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     color: "#BDBDBD",
   },
+  imageInput: {
+    alignItems: "center",
+    justifyContent: "center",
+    height: 240,
+    borderStyle: "solid",
+    borderColor: "E8E8E8",
+    borderRadius: 8,
+    backgroundColor: "#F6F6F6",
+  },
   input: {
     alignItems: "center",
     height: 50,
@@ -214,5 +267,18 @@ const styles = StyleSheet.create({
   inputIcon: {
     position: "absolute",
     top: 13,
+  },
+  crossButton: {
+    position: "absolute",
+    top: 5,
+    right: 5,
+  },
+  cameraBtn: {
+    width: 60,
+    height: 60,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "50%",
+    backgroundColor: "#FFFFFF",
   },
 });

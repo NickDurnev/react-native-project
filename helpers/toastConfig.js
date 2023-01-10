@@ -19,6 +19,13 @@ const toastConfig = {
         textAlign: "center",
         color: "#FAFAFA",
       }}
+      text2Style={{
+        width: "80%",
+        fontSize: 16,
+        fontWeight: "400",
+        textAlign: "center",
+        color: "#FAFAFA",
+      }}
     />
   ),
   error: (props) => (
@@ -37,6 +44,13 @@ const toastConfig = {
         textAlign: "center",
         color: "#FAFAFA",
       }}
+      text2Style={{
+        width: "80%",
+        fontSize: 16,
+        fontWeight: "400",
+        textAlign: "center",
+        color: "#FAFAFA",
+      }}
     />
   ),
 
@@ -49,6 +63,13 @@ const toastConfig = {
         backgroundColor: "#57DEEF",
       }}
       text1Style={{
+        fontSize: 16,
+        fontWeight: "400",
+        textAlign: "center",
+        color: "#FAFAFA",
+      }}
+      text2Style={{
+        width: "80%",
         fontSize: 16,
         fontWeight: "400",
         textAlign: "center",

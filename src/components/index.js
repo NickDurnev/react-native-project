@@ -7,5 +7,6 @@ export * from "./Post.jsx";
 export * from "./Container.jsx";
 export * from "./LogoutBtn.jsx";
 export * from "./AuthRoute.jsx";
-export * from "./CameraComponent.jsx";
 export * from "./Main.jsx";
+export * from "./ModalView.jsx";
+export * from "./PhotoPicker.jsx";
