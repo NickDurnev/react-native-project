@@ -5,7 +5,10 @@ const NestedScreen = createStackNavigator();
 
 export const PostsScreen = () => {
   return (
-    <NestedScreen.Navigator screenOptions={{ headerShown: false }}>
+    <NestedScreen.Navigator
+      screenOptions={{ headerShown: false }}
+      initialRouteName="DefaultScreen"
+    >
       <NestedScreen.Screen name="DefaultScreen" component={DefaultScreen} />
       <NestedScreen.Screen name="CommentsScreen" component={CommentsScreen} />
       <NestedScreen.Screen name="MapScreen" component={MapScreen} />

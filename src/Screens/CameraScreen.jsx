@@ -4,12 +4,16 @@ import * as MediaLibrary from "expo-media-library";
 import { StyleSheet, TouchableOpacity, View, Image } from "react-native";
 
 //# icons import
+import GoBackIcon from "../../assets/icons/arrow-left.svg";
 import { FontAwesome } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 
-export const CameraScreen = ({ navigation }) => {
+export const CameraScreen = ({ navigation, route }) => {
   const [photo, setPhoto] = useState(null);
   const [camera, setCamera] = useState(null);
+
+  const { prevScreen } = route.params;
+  console.log(prevScreen);
 
   const takePhoto = async () => {
     const shot = await camera.takePictureAsync();
@@ -20,13 +24,21 @@ export const CameraScreen = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: "#6B6B6B" }}>
+      <View style={styles.topBar}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.navigate(prevScreen)}
+        >
+          <GoBackIcon height={30} width={30} />
+        </TouchableOpacity>
+      </View>
       {photo ? (
         <View>
           <Image source={{ uri: photo }} style={{ height: "100%" }} />
           <View style={styles.butttonContainer}>
             <TouchableOpacity
               style={styles.butttonWrap}
-              onPress={() => navigation.navigate("Create", { photo: photo })}
+              onPress={() => navigation.navigate(prevScreen, { photo: photo })}
             >
               <FontAwesome name="save" size={40} color="#6B6B6B" />
             </TouchableOpacity>
@@ -48,7 +60,7 @@ export const CameraScreen = ({ navigation }) => {
               setCamera(ref);
             }}
           ></Camera>
-          <View style={styles.bar}>
+          <View style={styles.bottomBar}>
             <TouchableOpacity style={styles.buttton} onPress={takePhoto} />
           </View>
         </View>
@@ -58,28 +70,45 @@ export const CameraScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  camera: {
-    marginTop: 50,
+  backButton: {
+    position: "absolute",
+    top: 30,
+    left: 16,
+    width: 32,
+    height: 32,
     alignItems: "center",
     justifyContent: "center",
-    height: "80%",
+    borderRadius: "50%",
+    backgroundColor: "#F6FAF4",
+  },
+  camera: {
+    alignItems: "center",
+    justifyContent: "center",
+    height: "83%",
     borderRadius: 8,
   },
-  bar: {
-    height: "13%",
+  bottomBar: {
+    height: "10%",
+    paddingTop: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#6B6B6B",
+  },
+  topBar: {
+    height: "10%",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#6B6B6B",
   },
   buttton: {
-    width: 70,
-    height: 70,
+    width: 80,
+    height: 80,
     borderRadius: "50%",
     backgroundColor: "#FEFBFA",
   },
   butttonContainer: {
     position: "absolute",
-    bottom: 40,
+    bottom: 100,
     width: "100%",
     height: 60,
     paddingHorizontal: 30,

@@ -7,8 +7,6 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 
-//TODO Виправити на закриття по кліку поза модалкою
-
 const halfWindowsWidth = Dimensions.get("window").width / 2;
 const halfWindowsHeight = Dimensions.get("window").height / 2;
 
@@ -23,9 +21,10 @@ export const ModalView = ({ children, modalVisible, setModalVisible }) => {
         setModalVisible(!modalVisible);
       }}
     >
-      <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-        <View style={styles.modalView}>{children}</View>
+      <TouchableWithoutFeedback onPress={() => setModalVisible(!modalVisible)}>
+        <View style={styles.modalOverlay} />
       </TouchableWithoutFeedback>
+      <View style={styles.modalView}>{children}</View>
     </Modal>
   );
 };
@@ -49,6 +48,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+  modalOverlay: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
   },
 });
 

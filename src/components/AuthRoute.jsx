@@ -24,6 +24,11 @@ export const AuthRoute = ({ stateChange }) => {
             name="Register"
             component={RegistrationScreen}
           />
+          <AuthStack.Screen
+            options={{ headerShown: false }}
+            name="CameraScreen"
+            component={CameraScreen}
+          />
         </>
       )}
       {stateChange && (

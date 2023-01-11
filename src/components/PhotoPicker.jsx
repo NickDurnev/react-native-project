@@ -1,9 +1,31 @@
+import PropTypes from "prop-types";
+import { useState, useEffect } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import * as MediaLibrary from "expo-media-library";
+import { Camera } from "expo-camera";
+
+//# Icons imports
 import { Entypo } from "@expo/vector-icons";
 import CameraIcon from "../../assets/icons/camera.svg";
 
-export const PhotoPicker = ({ setPhoto, setModalVisible, openCamera }) => {
+export const PhotoPicker = ({
+  setPhoto,
+  setModalVisible,
+  openCamera,
+  changeUserAvatar,
+}) => {
+  const [cameraPermission, setCameraPermission] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      const photo = await Camera.requestCameraPermissionsAsync();
+      await MediaLibrary.requestPermissionsAsync();
+
+      setCameraPermission(photo.status === "granted");
+    })();
+  }, []);
+
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -15,14 +37,17 @@ export const PhotoPicker = ({ setPhoto, setModalVisible, openCamera }) => {
     if (!result.canceled) {
       setPhoto(result.assets[0].uri);
       setModalVisible(false);
+      changeUserAvatar();
     }
   };
 
   return (
     <View style={styles.wrap}>
-      <TouchableOpacity style={styles.button} onPress={openCamera}>
-        <CameraIcon width={24} height={24} />
-      </TouchableOpacity>
+      {cameraPermission && (
+        <TouchableOpacity style={styles.button} onPress={openCamera}>
+          <CameraIcon width={24} height={24} />
+        </TouchableOpacity>
+      )}
       <TouchableOpacity style={styles.button} onPress={pickImage}>
         <Entypo name="images" size={24} color="#BDBDBD" />
       </TouchableOpacity>
@@ -46,3 +71,10 @@ const styles = StyleSheet.create({
     borderRadius: "50%",
   },
 });
+
+PhotoPicker.propTypes = {
+  setPhoto: PropTypes.func.isRequired,
+  setModalVisible: PropTypes.func.isRequired,
+  openCamera: PropTypes.func.isRequired,
+  changeUserAvatar: PropTypes.func,
+};

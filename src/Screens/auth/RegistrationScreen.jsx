@@ -11,10 +11,16 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
 import { useDispatch } from "react-redux";
 import { uploadUserAvatarsToStorage } from "../../firebase/storageOperations";
-import { Title, Input, TextBtn, SubmitBtn } from "../../components";
+import {
+  Title,
+  Input,
+  TextBtn,
+  SubmitBtn,
+  PhotoPicker,
+  ModalView,
+} from "../../components";
 
 //#Icons imports
 import CrossIcon from "../../../assets/icons/delete-cross.svg";
@@ -31,10 +37,11 @@ const initialState = {
 };
 
 export const RegistrationScreen = ({ navigation }) => {
-  const [image, setImage] = useState(null);
+  const [photo, setPhoto] = useState(null);
   const [isHiddenPassword, setIsHiddenPassword] = useState(true);
   const [state, setState] = useState(initialState);
   const [isShownKeyboard, setIsShownKeyboard] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -58,26 +65,13 @@ export const RegistrationScreen = ({ navigation }) => {
     };
   }, []);
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
-  };
-
   const handleSubmit = async () => {
-    if (!image) {
+    if (!photo) {
       dispatch(authRegister(state));
       setState(initialState);
       return;
     }
-    const imageURL = await uploadUserAvatarsToStorage(image, state.email);
+    const imageURL = await uploadUserAvatarsToStorage(photo, state.email);
     dispatch(authRegister({ ...state, imageURL }));
     setState(initialState);
   };
@@ -85,6 +79,11 @@ export const RegistrationScreen = ({ navigation }) => {
   const handleKeyboardHide = () => {
     setIsShownKeyboard(false);
     Keyboard.dismiss();
+  };
+
+  const openCamera = () => {
+    setModalVisible(false);
+    navigation.navigate("CameraScreen", { prevScreen: "Register" });
   };
 
   return (
@@ -110,10 +109,10 @@ export const RegistrationScreen = ({ navigation }) => {
           <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : "height"}
           >
-            <TouchableOpacity onPress={pickImage}>
-              {image ? (
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+              {photo ? (
                 <>
-                  <Image source={{ uri: image }} style={styles.avatar} />
+                  <Image source={{ uri: photo }} style={styles.avatar} />
                   <CrossIcon
                     style={{
                       ...styles.avatarIcon,
@@ -201,6 +200,16 @@ export const RegistrationScreen = ({ navigation }) => {
             )}
           </KeyboardAvoidingView>
         </View>
+        <ModalView
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+        >
+          <PhotoPicker
+            setPhoto={(photo) => setPhoto(photo)}
+            setModalVisible={setModalVisible}
+            openCamera={openCamera}
+          />
+        </ModalView>
       </View>
     </TouchableWithoutFeedback>
   );

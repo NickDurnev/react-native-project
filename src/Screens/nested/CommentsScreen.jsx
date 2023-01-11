@@ -32,7 +32,7 @@ export const CommentsScreen = ({ navigation, route }) => {
   const [isShownKeyboard, setIsShownKeyboard] = useState(false);
 
   const { id, photo, commentsNumber, prevScreen } = route.params;
-  const { userId, nickname } = useSelector((state) => state.auth);
+  const { userId, nickname, avatarURL } = useSelector((state) => state.auth);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -75,6 +75,7 @@ export const CommentsScreen = ({ navigation, route }) => {
     await uploadCommentToDB({
       id,
       userId,
+      avatarURL,
       nickname,
       commentsNumber,
       text,
@@ -114,7 +115,7 @@ export const CommentsScreen = ({ navigation, route }) => {
             data={comments}
             renderItem={({ item, index }) => {
               const isInteger = Number.isInteger(index / 2);
-              const { text, date } = item;
+              const { text, date, avatarURL } = item;
               return (
                 <View
                   style={{
@@ -123,7 +124,7 @@ export const CommentsScreen = ({ navigation, route }) => {
                     marginBottom: index === comments.length - 1 ? 0 : 24,
                   }}
                 >
-                  <View style={styles.avatar} />
+                  <Image source={{ uri: avatarURL }} style={styles.avatar} />
                   <View style={styles.comment}>
                     <Text style={styles.nicknameText}>{nickname}</Text>
                     <Text style={styles.commentText}>{text}</Text>
@@ -156,6 +157,8 @@ export const CommentsScreen = ({ navigation, route }) => {
           onChangeText={(value) =>
             setUserComment((prevState) => ({ ...prevState, value }))
           }
+          maxLength={150}
+          multiline={true}
           style={{ ...styles.input, marginBottom: 16 }}
         />
         <TouchableOpacity
@@ -219,7 +222,8 @@ const styles = StyleSheet.create({
     padding: 16,
     alignItems: "center",
     width: windowsWidth - 32,
-    height: 50,
+    minHeight: 50,
+    paddingRight: 50,
     fontFamily: "Roboto-Medium",
     fontWeight: "500",
     fontSize: 16,

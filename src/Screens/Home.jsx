@@ -8,7 +8,7 @@ import PlusIcon from "../../assets/icons/toolbar/union.svg";
 
 const MainTab = createBottomTabNavigator();
 
-export const Home = () => {
+export const Home = ({ navigation }) => {
   const [isCreateScreen, setIsCreateScreen] = useState(true);
 
   return (
@@ -23,6 +23,7 @@ export const Home = () => {
           paddingBottom: 10,
           backgroundColor: "#FFFFFF",
         },
+        backBehavior: "history",
       }}
     >
       <MainTab.Screen
@@ -35,6 +36,7 @@ export const Home = () => {
         component={PostsScreen}
         listeners={() => ({
           tabPress: () => {
+            navigation.navigate("DefaultScreen");
             setIsCreateScreen(true);
           },
         })}

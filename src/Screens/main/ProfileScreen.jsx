@@ -10,13 +10,19 @@ import {
   Image,
 } from "react-native";
 import { collection, where, onSnapshot, query } from "firebase/firestore";
-import * as ImagePicker from "expo-image-picker";
 import { db } from "../../firebase/config";
 import {
   uploadUserAvatarsToStorage,
   deleteFileFromStorage,
 } from "../../firebase/storageOperations";
-import { Container, Title, LogoutBtn, Post } from "../../components";
+import {
+  Container,
+  Title,
+  LogoutBtn,
+  Post,
+  PhotoPicker,
+  ModalView,
+} from "../../components";
 import {
   authLogoOut,
   changeUserPhotoURL,
@@ -28,14 +34,23 @@ import PlusIcon from "../../../assets/icons/add-plus.svg";
 
 const halfWindowsWidth = Dimensions.get("window").width / 2;
 
-export const ProfileScreen = ({ navigation }) => {
+export const ProfileScreen = ({ navigation, route }) => {
   const [newAvatarURL, setAvatarURL] = useState(null);
   const [data, setData] = useState([]);
+  const [photo, setPhoto] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
   const { userId, nickname, email, avatarURL } = useSelector(
     (state) => state.auth
   );
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (route.params) {
+      setPhoto(route.params.photo);
+    }
+  }, [route]);
 
   const getUserPosts = async () => {
     const q = await query(
@@ -53,30 +68,28 @@ export const ProfileScreen = ({ navigation }) => {
 
   useEffect(() => {
     getUserPosts();
+    changeUserAvatar();
   }, []);
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      return result.assets[0].uri;
-    }
-  };
+  useEffect(() => {
+    changeUserAvatar();
+  }, [photo]);
 
   const changeUserAvatar = async () => {
-    const image = await pickImage();
-    if (!image) {
+    if (!photo) {
       return;
     }
-    await deleteFileFromStorage(email);
-    const newAvatarURL = await uploadUserAvatarsToStorage(image, email);
+    if (avatarURL) {
+      await deleteFileFromStorage(email);
+    }
+    const newAvatarURL = await uploadUserAvatarsToStorage(photo, email);
     dispatch(changeUserPhotoURL({ newAvatarURL }));
     setAvatarURL(newAvatarURL);
+  };
+
+  const openCamera = () => {
+    setModalVisible(false);
+    navigation.navigate("CameraScreen", { prevScreen: "Profile" });
   };
 
   return (
@@ -86,7 +99,7 @@ export const ProfileScreen = ({ navigation }) => {
         source={require("../../../assets/images/PhotoBG.png")}
       >
         <Container addStyles={styles.container}>
-          <TouchableOpacity onPress={changeUserAvatar}>
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
             {avatarURL ? (
               <>
                 <Image
@@ -166,6 +179,17 @@ export const ProfileScreen = ({ navigation }) => {
             }}
             keyExtractor={(item) => item.id}
           ></FlatList>
+          <ModalView
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+          >
+            <PhotoPicker
+              setPhoto={(photo) => setPhoto(photo)}
+              setModalVisible={setModalVisible}
+              openCamera={openCamera}
+              changeUserAvatar={changeUserAvatar}
+            />
+          </ModalView>
         </Container>
       </ImageBackground>
     </View>

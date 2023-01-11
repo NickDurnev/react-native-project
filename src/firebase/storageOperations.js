@@ -80,6 +80,7 @@ export const uploadPostToDB = async (post) => {
 export const uploadCommentToDB = async ({
   id,
   userId,
+  avatarURL,
   nickname,
   commentsNumber,
   text,
@@ -87,7 +88,7 @@ export const uploadCommentToDB = async ({
 }) => {
   const docRef = doc(db, "posts", id);
   const colRef = collection(docRef, "comments");
-  await addDoc(colRef, { userId, nickname, text, date });
+  await addDoc(colRef, { userId, avatarURL, nickname, text, date });
   await updateDoc(docRef, { commentsNumber: commentsNumber + 1 });
 };
 

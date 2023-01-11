@@ -12,10 +12,7 @@ import {
 } from "react-native";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Camera } from "expo-camera";
-import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
-import Toast from "react-native-toast-message";
 import {
   uploadPhotoToStorage,
   uploadPostToDB,
@@ -29,7 +26,7 @@ import {
   PhotoPicker,
 } from "../../components";
 
-//# icons import
+//# Icons imports
 import GoBackIcon from "../../../assets/icons/arrow-left.svg";
 import MapIcon from "../../../assets/icons/map-pin.svg";
 import CameraIcon from "../../../assets/icons/camera.svg";
@@ -43,10 +40,9 @@ const initialState = {
 export const CreatePostScreen = ({ navigation, route }) => {
   const [state, setState] = useState(initialState);
   const [isDisable, setIsDisable] = useState(true);
-  const [cameraPermission, setCameraPermission] = useState(null);
   const [locationPermission, setLocationPermission] = useState(null);
+  const [isShownKeyboard, setIsShownKeyboard] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [camera, setCamera] = useState(null);
   const [photo, setPhoto] = useState(null);
 
   const { userId, nickname, email, avatarURL } = useSelector(
@@ -67,13 +63,30 @@ export const CreatePostScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     (async () => {
-      const photo = await Camera.requestCameraPermissionsAsync();
       const location = await Location.requestForegroundPermissionsAsync();
-      await MediaLibrary.requestPermissionsAsync();
 
-      setCameraPermission(photo.status === "granted");
       setLocationPermission(location.status === "granted");
     })();
+  }, []);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setIsShownKeyboard(true); // or some other action
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setIsShownKeyboard(false); // or some other action
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
   }, []);
 
   const handleSubmit = async () => {
@@ -108,26 +121,12 @@ export const CreatePostScreen = ({ navigation, route }) => {
     navigation.navigate("DefaultScreen");
   };
 
-  const openModal = () => {
-    console.log(cameraPermission);
-    if (!cameraPermission) {
-      Toast.show({
-        type: "info",
-        text1: "Дайте повноваження для",
-        text2: "використання камери",
-      });
-      return;
-    }
-    setModalVisible(true);
-  };
-
   const openCamera = () => {
     setModalVisible(false);
     navigation.navigate("CameraScreen", { prevScreen: "Create" });
   };
 
   const handleKeyboardHide = () => {
-    setModalVisible(false);
     Keyboard.dismiss();
   };
 
@@ -151,12 +150,12 @@ export const CreatePostScreen = ({ navigation, route }) => {
       </Header>
       <Container>
         <TouchableWithoutFeedback onPress={handleKeyboardHide}>
-          <View style={styles.container}>
+          <View>
             <View>
               <KeyboardAvoidingView
                 behavior={Platform.OS == "ios" ? "padding" : "height"}
               >
-                <View style={{ marginBottom: 32 }}>
+                <View style={{ marginBottom: isShownKeyboard ? 0 : 32 }}>
                   {photo ? (
                     <View>
                       <Image source={{ uri: photo }} style={{ height: 240 }} />
@@ -171,7 +170,7 @@ export const CreatePostScreen = ({ navigation, route }) => {
                     <View style={styles.imageInput}>
                       <TouchableOpacity
                         style={styles.cameraBtn}
-                        onPress={openModal}
+                        onPress={() => setModalVisible(true)}
                       >
                         <CameraIcon width={24} height={24} />
                       </TouchableOpacity>
