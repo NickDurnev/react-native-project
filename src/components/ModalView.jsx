@@ -11,7 +11,6 @@ const halfWindowsWidth = Dimensions.get("window").width / 2;
 const halfWindowsHeight = Dimensions.get("window").height / 2;
 
 export const ModalView = ({ children, modalVisible, setModalVisible }) => {
-  console.log(modalVisible);
   return (
     <Modal
       animationType="fade"

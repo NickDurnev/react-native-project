@@ -8,7 +8,6 @@ const initialState = {
 
 const actions = {
   updateUser: (state, { payload }) => {
-    console.log(payload);
     return {
       ...state,
       userId: payload.userId,

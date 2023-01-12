@@ -36,8 +36,6 @@ export const authRegister =
         type: "error",
         text1: message,
       });
-      console.log("error", error.message);
-      console.log(error.code);
     }
   };
 
@@ -52,7 +50,6 @@ export const authLogin =
         type: "error",
         text1: message,
       });
-      console.log(error.code);
     }
   };
 
@@ -63,7 +60,6 @@ export const authLogoOut = () => async (dispatch, getState) => {
 
 export const authStateUserChange = () => async (dispatch, getState) => {
   await auth.onAuthStateChanged((user) => {
-    console.log(user);
     if (user) {
       const userUpdateProfile = {
         userId: user.uid,

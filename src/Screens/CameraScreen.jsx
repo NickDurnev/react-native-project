@@ -3,7 +3,7 @@ import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import { StyleSheet, TouchableOpacity, View, Image } from "react-native";
 
-//# icons import
+//# Icons imports
 import GoBackIcon from "../../assets/icons/arrow-left.svg";
 import { FontAwesome } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
@@ -13,12 +13,10 @@ export const CameraScreen = ({ navigation, route }) => {
   const [camera, setCamera] = useState(null);
 
   const { prevScreen } = route.params;
-  console.log(prevScreen);
 
   const takePhoto = async () => {
     const shot = await camera.takePictureAsync();
-    console.log(shot.uri);
-    // await MediaLibrary.createAssetAsync(shot.uri);
+    await MediaLibrary.createAssetAsync(shot.uri);
     setPhoto(shot.uri);
   };
 

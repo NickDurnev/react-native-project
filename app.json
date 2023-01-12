@@ -1,13 +1,14 @@
 {
   "expo": {
-    "name": "myNewProject",
-    "slug": "myNewProject",
+    "name": "React Native Socials",
+    "slug": "react-native-socials",
+    "description": "App for sharing photos with other users, left comments and liken under the bests posts.",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/bear.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/bear.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

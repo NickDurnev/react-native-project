@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavigationContainer } from "@react-navigation/native";
-import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
 
 import { AuthRoute } from "../components";
@@ -20,7 +19,6 @@ export const Main = ({ onLayoutRootView }) => {
     <NavigationContainer>
       <View style={styles.container} onLayout={onLayoutRootView}>
         {stateChange !== null && <AuthRoute stateChange={stateChange} />}
-        <StatusBar style="auto" />
       </View>
     </NavigationContainer>
   );

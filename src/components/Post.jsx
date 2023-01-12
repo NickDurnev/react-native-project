@@ -16,7 +16,6 @@ export const Post = ({ data, showComments, showLocation, marginBottom }) => {
   const { userId, nickname } = useSelector((state) => state.auth);
 
   const checkLocation = () => {
-    console.log(coords);
     if (!coords) {
       Toast.show({
         type: "info",
