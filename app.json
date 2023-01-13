@@ -3,9 +3,10 @@
     "name": "React Native Socials",
     "slug": "react-native-socials",
     "description": "App for sharing photos with other users, left comments and liken under the bests posts.",
+     "privacy": "public",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/bear.png",
+    "icon": "./assets/bear-icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/bear.png",
