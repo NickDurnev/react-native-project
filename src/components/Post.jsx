@@ -100,6 +100,7 @@ const styles = StyleSheet.create({
   },
   imageName: {
     marginBottom: 8,
+    paddingTop: 5,
     fontFamily: "Roboto-Medium",
     fontWeight: "500",
     fontSize: 16,
