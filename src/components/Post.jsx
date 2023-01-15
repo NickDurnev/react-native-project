@@ -34,7 +34,9 @@ export const Post = ({ data, showComments, showLocation, marginBottom }) => {
       }}
     >
       <Image source={{ uri: photo }} style={styles.image} />
-      <Text style={styles.imageName}>{name}</Text>
+      <View style={{ paddingVertical: 5 }}>
+        <Text style={styles.imageName}>{name}</Text>
+      </View>
       <View>
         <View
           style={{
@@ -100,7 +102,6 @@ const styles = StyleSheet.create({
   },
   imageName: {
     marginBottom: 8,
-    paddingTop: 5,
     fontFamily: "Roboto-Medium",
     fontWeight: "500",
     fontSize: 16,
