@@ -7,7 +7,7 @@ export const Input = ({ isSecure, placeholder, position, onChange, value }) => {
   return (
     <TextInput
       value={value}
-      maxLength={20}
+      maxLength={40}
       onChangeText={onChange}
       onFocus={() => setFocused(true)}
       onBlur={() => setFocused(false)}
