@@ -2,7 +2,7 @@
   "expo": {
     "name": "React Native Socials",
     "slug": "react-native-socials",
-    "description": "App for sharing photos with other users, left comments and liken under the bests posts.",
+    "description": "App for sharing photos with other users, left comments and likes under the bests posts.",
      "privacy": "public",
     "version": "1.0.0",
     "orientation": "portrait",
