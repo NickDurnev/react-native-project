@@ -9,7 +9,7 @@ import CommentIcon from "../../assets/icons/message-circle.svg";
 import LikeIcon from "../../assets/icons/thumbs-up.svg";
 import MapIcon from "../../assets/icons/map-pin.svg";
 
-export const Post = ({ data, showComments, showLocation, marginBottom }) => {
+export const Post = ({ data, showComments, showLocation }) => {
   const { id, name, location, photo, commentsNumber, likesNumber, coords } =
     data;
 
@@ -30,7 +30,7 @@ export const Post = ({ data, showComments, showLocation, marginBottom }) => {
     <View
       style={{
         height: 300,
-        marginBottom: marginBottom,
+        marginBottom: 32,
       }}
     >
       <Image source={{ uri: photo }} style={styles.image} />
@@ -133,5 +133,4 @@ Post.propTypes = {
   }).isRequired,
   showComments: PropTypes.func,
   showLocation: PropTypes.func,
-  marginBottom: PropTypes.number.isRequired,
 };

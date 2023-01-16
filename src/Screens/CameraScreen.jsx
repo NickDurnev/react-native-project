@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Camera } from "expo-camera";
-import * as MediaLibrary from "expo-media-library";
+// import * as MediaLibrary from "expo-media-library";
 import { StyleSheet, TouchableOpacity, View, Image } from "react-native";
 
 //# Icons imports
@@ -16,7 +16,7 @@ export const CameraScreen = ({ navigation, route }) => {
 
   const takePhoto = async () => {
     const shot = await camera.takePictureAsync();
-    await MediaLibrary.createAssetAsync(shot.uri);
+    // await MediaLibrary.createAssetAsync(shot.uri);
     setPhoto(shot.uri);
   };
 

@@ -39,12 +39,14 @@ export const uploadUserAvatarsToStorage = async (photo, email) => {
   try {
     const response = await fetch(photo);
     const file = await response.blob();
+    console.log(1);
     const storageRef = await ref(storage, `usersAvatars/${email}`);
+    console.log(storageRef);
     await uploadBytes(storageRef, file);
     const photoURL = await getDownloadURL(storageRef);
     return photoURL;
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     Toast.show({
       type: "error",
       text1: "Щось пішло не так. Спробуйте ще раз",

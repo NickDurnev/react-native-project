@@ -144,7 +144,6 @@ export const ProfileScreen = ({ navigation, route }) => {
                 commentsNumber = 0,
                 likesNumber = 0,
                 coords,
-                userID,
               } = item;
               return (
                 <View>
@@ -187,7 +186,6 @@ export const ProfileScreen = ({ navigation, route }) => {
               setPhoto={(photo) => setPhoto(photo)}
               setModalVisible={setModalVisible}
               openCamera={openCamera}
-              changeUserAvatar={changeUserAvatar}
             />
           </ModalView>
         </Container>

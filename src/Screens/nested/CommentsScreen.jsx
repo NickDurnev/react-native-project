@@ -9,6 +9,7 @@ import {
   Dimensions,
   Keyboard,
   Image,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { useSelector } from "react-redux";
 import { collection, onSnapshot } from "firebase/firestore";
@@ -91,84 +92,86 @@ export const CommentsScreen = ({ navigation, route }) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <Header>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate(prevScreen)}
-        >
-          <GoBackIcon height={24} width={24} />
-        </TouchableOpacity>
-        <Title
-          addStyles={{
-            fontSize: 17,
-            lineHeight: 22,
-          }}
-        >
-          Коментарі
-        </Title>
-      </Header>
-      <Container addStyles={{ paddingBottom: 86, flex: 1 }}>
-        <Image source={{ uri: photo }} style={styles.image} />
-        {comments && (
-          <FlatList
-            data={comments}
-            renderItem={({ item, index }) => {
-              const isInteger = Number.isInteger(index / 2);
-              const { text, date, avatarURL } = item;
-              return (
-                <View
-                  style={{
-                    flexDirection: isInteger ? "row" : "row-reverse",
-                    justifyContent: "space-between",
-                    marginBottom: index === comments.length - 1 ? 0 : 24,
-                  }}
-                >
-                  <Image source={{ uri: avatarURL }} style={styles.avatar} />
-                  <View style={styles.comment}>
-                    <Text style={styles.nicknameText}>{nickname}</Text>
-                    <Text style={styles.commentText}>{text}</Text>
-                    <View
-                      style={{
-                        flexDirection: isInteger ? "row-reverse" : "row",
-                      }}
-                    >
-                      <Text style={{ ...styles.commentDate }}>{date}</Text>
+    <TouchableWithoutFeedback onPress={handleKeyboardHide}>
+      <View style={{ flex: 1 }}>
+        <Header>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate(prevScreen)}
+          >
+            <GoBackIcon height={24} width={24} />
+          </TouchableOpacity>
+          <Title
+            addStyles={{
+              fontSize: 17,
+              lineHeight: 22,
+            }}
+          >
+            Коментарі
+          </Title>
+        </Header>
+        <Container addStyles={{ paddingBottom: 86, flex: 1 }}>
+          <Image source={{ uri: photo }} style={styles.image} />
+          {comments && (
+            <FlatList
+              data={comments}
+              renderItem={({ item, index }) => {
+                const isInteger = Number.isInteger(index / 2);
+                const { text, date, avatarURL } = item;
+                return (
+                  <View
+                    style={{
+                      flexDirection: isInteger ? "row" : "row-reverse",
+                      justifyContent: "space-between",
+                      marginBottom: index === comments.length - 1 ? 0 : 24,
+                    }}
+                  >
+                    <Image source={{ uri: avatarURL }} style={styles.avatar} />
+                    <View style={styles.comment}>
+                      <Text style={styles.nicknameText}>{nickname}</Text>
+                      <Text style={styles.commentText}>{text}</Text>
+                      <View
+                        style={{
+                          flexDirection: isInteger ? "row-reverse" : "row",
+                        }}
+                      >
+                        <Text style={{ ...styles.commentDate }}>{date}</Text>
+                      </View>
                     </View>
                   </View>
-                </View>
-              );
-            }}
-            keyExtractor={(item) => item.id}
-          ></FlatList>
-        )}
-      </Container>
-      <View
-        style={{
-          position: "absolute",
-          bottom: isShownKeyboard ? keyboardHeight : 8,
-          left: 16,
-        }}
-      >
-        <TextInput
-          placeholder={"Коментувати..."}
-          placeholderTextColor="#BDBDBD"
-          value={userComment}
-          onChangeText={(value) =>
-            setUserComment((prevState) => ({ ...prevState, value }))
-          }
-          maxLength={150}
-          multiline={true}
-          style={{ ...styles.input, marginBottom: 16 }}
-        />
-        <TouchableOpacity
-          style={styles.inputButton}
-          onPress={() => handleSubmit()}
+                );
+              }}
+              keyExtractor={(item) => item.id}
+            ></FlatList>
+          )}
+        </Container>
+        <View
+          style={{
+            position: "absolute",
+            bottom: isShownKeyboard ? keyboardHeight - 60 : 8,
+            left: 16,
+          }}
         >
-          <SendIcon height={34} width={34} />
-        </TouchableOpacity>
+          <TextInput
+            placeholder={"Коментувати..."}
+            placeholderTextColor="#BDBDBD"
+            value={userComment}
+            onChangeText={(value) =>
+              setUserComment((prevState) => ({ ...prevState, value }))
+            }
+            maxLength={150}
+            multiline={true}
+            style={{ ...styles.input, marginBottom: 16 }}
+          />
+          <TouchableOpacity
+            style={styles.inputButton}
+            onPress={() => handleSubmit()}
+          >
+            <SendIcon height={34} width={34} />
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 

@@ -6,7 +6,7 @@ import { Header, Container, Title, Post, LogoutBtn } from "../../components";
 import { db } from "../../firebase/config";
 import { authLogoOut } from "../../redux/auth/authOperations";
 
-export const DefaultScreen = ({ navigation, route }) => {
+export const DefaultScreen = ({ navigation }) => {
   const [data, setData] = useState([]);
 
   const dispatch = useDispatch();
@@ -100,7 +100,6 @@ export const DefaultScreen = ({ navigation, route }) => {
                       prevScreen: "DefaultScreen",
                     })
                   }
-                  marginBottom={index === data.length - 1 ? 0 : 32}
                 />
               </View>
             );

@@ -9,12 +9,7 @@ import { Camera } from "expo-camera";
 import { Entypo } from "@expo/vector-icons";
 import CameraIcon from "../../assets/icons/camera.svg";
 
-export const PhotoPicker = ({
-  setPhoto,
-  setModalVisible,
-  openCamera,
-  changeUserAvatar,
-}) => {
+export const PhotoPicker = ({ setPhoto, setModalVisible, openCamera }) => {
   const [cameraPermission, setCameraPermission] = useState(null);
 
   useEffect(() => {
@@ -37,7 +32,6 @@ export const PhotoPicker = ({
     if (!result.canceled) {
       setPhoto(result.assets[0].uri);
       setModalVisible(false);
-      changeUserAvatar();
     }
   };
 
@@ -76,5 +70,4 @@ PhotoPicker.propTypes = {
   setPhoto: PropTypes.func.isRequired,
   setModalVisible: PropTypes.func.isRequired,
   openCamera: PropTypes.func.isRequired,
-  changeUserAvatar: PropTypes.func,
 };
