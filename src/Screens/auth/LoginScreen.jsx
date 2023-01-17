@@ -8,6 +8,7 @@ import {
   Keyboard,
   Platform,
   TouchableWithoutFeedback,
+  ActivityIndicator,
 } from "react-native";
 import { Title, Input, TextBtn, SubmitBtn } from "../../components";
 
@@ -19,6 +20,7 @@ const initialState = {
 };
 
 export const LoginScreen = ({ navigation }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [isHiddenPassword, setIsHiddenPassword] = useState(true);
   const [state, setstate] = useState(initialState);
   const [isShownKeyboard, setIsShownKeyboard] = useState(false);
@@ -45,8 +47,10 @@ export const LoginScreen = ({ navigation }) => {
     };
   }, []);
 
-  const handleSubmit = () => {
-    dispatch(authLogin(state));
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    await dispatch(authLogin(state));
+    setIsLoading(false);
     setstate(initialState);
     navigation.navigate("Home");
   };
@@ -55,6 +59,8 @@ export const LoginScreen = ({ navigation }) => {
     setIsShownKeyboard(false);
     Keyboard.dismiss();
   };
+
+  console.log(isLoading);
 
   return (
     <TouchableWithoutFeedback onPress={handleKeyboardHide}>
@@ -114,14 +120,18 @@ export const LoginScreen = ({ navigation }) => {
                 position={{ position: "absolute", top: 15, right: 15 }}
               />
             </View>
-            {!isShownKeyboard && (
-              <SubmitBtn
-                text={"Увійти"}
-                onSubmit={handleSubmit}
-                position={{
-                  marginBottom: 15,
-                }}
-              />
+            {isLoading ? (
+              <ActivityIndicator size={"small"} color={"#FF6C00"} />
+            ) : (
+              !isShownKeyboard && (
+                <SubmitBtn
+                  text={"Увійти"}
+                  onSubmit={handleSubmit}
+                  position={{
+                    marginBottom: 15,
+                  }}
+                />
+              )
             )}
             {!isShownKeyboard && (
               <TextBtn

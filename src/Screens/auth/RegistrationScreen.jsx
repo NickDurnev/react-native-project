@@ -10,6 +10,7 @@ import {
   Image,
   TouchableWithoutFeedback,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { uploadUserAvatarsToStorage } from "../../firebase/storageOperations";
@@ -38,6 +39,7 @@ const initialState = {
 
 export const RegistrationScreen = ({ navigation }) => {
   const [photo, setPhoto] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [isHiddenPassword, setIsHiddenPassword] = useState(true);
   const [state, setState] = useState(initialState);
   const [isShownKeyboard, setIsShownKeyboard] = useState(false);
@@ -66,13 +68,16 @@ export const RegistrationScreen = ({ navigation }) => {
   }, []);
 
   const handleSubmit = async () => {
+    setIsLoading(true);
     if (!photo) {
-      dispatch(authRegister(state));
+      await dispatch(authRegister(state));
+      setIsLoading(false);
       setState(initialState);
       return;
     }
     const imageURL = await uploadUserAvatarsToStorage(photo, state.email);
-    dispatch(authRegister({ ...state, imageURL }));
+    await dispatch(authRegister({ ...state, imageURL }));
+    setIsLoading(false);
     setState(initialState);
   };
 
@@ -179,14 +184,18 @@ export const RegistrationScreen = ({ navigation }) => {
                 position={{ position: "absolute", top: 15, right: 15 }}
               />
             </View>
-            {!isShownKeyboard && (
-              <SubmitBtn
-                text={"Зареєструватися"}
-                onSubmit={handleSubmit}
-                position={{
-                  marginBottom: 15,
-                }}
-              />
+            {isLoading ? (
+              <ActivityIndicator size={"small"} color={"#FF6C00"} />
+            ) : (
+              !isShownKeyboard && (
+                <SubmitBtn
+                  text={"Зареєструватися"}
+                  onSubmit={handleSubmit}
+                  position={{
+                    marginBottom: 15,
+                  }}
+                />
+              )
             )}
             {!isShownKeyboard && (
               <TextBtn

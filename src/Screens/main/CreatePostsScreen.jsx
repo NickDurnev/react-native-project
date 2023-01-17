@@ -9,6 +9,7 @@ import {
   Keyboard,
   Platform,
   TouchableWithoutFeedback,
+  ActivityIndicator,
 } from "react-native";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -39,6 +40,7 @@ const initialState = {
 
 export const CreatePostScreen = ({ navigation, route }) => {
   const [state, setState] = useState(initialState);
+  const [isLoading, setIsLoading] = useState(false);
   const [isDisable, setIsDisable] = useState(true);
   const [locationPermission, setLocationPermission] = useState(null);
   const [isShownKeyboard, setIsShownKeyboard] = useState(false);
@@ -94,6 +96,7 @@ export const CreatePostScreen = ({ navigation, route }) => {
       return;
     }
     let coords = null;
+    setIsLoading(true);
     if (locationPermission) {
       const location = await Location.getCurrentPositionAsync({});
       coords = {
@@ -114,6 +117,7 @@ export const CreatePostScreen = ({ navigation, route }) => {
       coords,
     };
     await uploadPostToDB(post);
+    setIsLoading(false);
     setState(initialState);
     setPhoto(null);
     setIsDisable(true);
@@ -206,11 +210,15 @@ export const CreatePostScreen = ({ navigation, route }) => {
                     }}
                   />
                 </View>
-                <SubmitBtn
-                  text={"Опублікувати"}
-                  onSubmit={handleSubmit}
-                  disabled={isDisable}
-                />
+                {isLoading ? (
+                  <ActivityIndicator size={"small"} color={"#FF6C00"} />
+                ) : (
+                  <SubmitBtn
+                    text={"Опублікувати"}
+                    onSubmit={handleSubmit}
+                    disabled={isDisable}
+                  />
+                )}
               </KeyboardAvoidingView>
             </View>
             <ModalView

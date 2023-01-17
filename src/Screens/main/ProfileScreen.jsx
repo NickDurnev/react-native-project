@@ -8,6 +8,7 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import { collection, where, onSnapshot, query } from "firebase/firestore";
 import { db } from "../../firebase/config";
@@ -35,7 +36,8 @@ import PlusIcon from "../../../assets/icons/add-plus.svg";
 const halfWindowsWidth = Dimensions.get("window").width / 2;
 
 export const ProfileScreen = ({ navigation, route }) => {
-  const [newAvatarURL, setAvatarURL] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [newAvatarURL, setNewAvatarURL] = useState(null);
   const [data, setData] = useState([]);
   const [photo, setPhoto] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -79,12 +81,14 @@ export const ProfileScreen = ({ navigation, route }) => {
     if (!photo) {
       return;
     }
+    setIsLoading(true);
     if (avatarURL) {
       await deleteFileFromStorage(email);
     }
-    const newAvatarURL = await uploadUserAvatarsToStorage(photo, email);
-    dispatch(changeUserPhotoURL({ newAvatarURL }));
-    setAvatarURL(newAvatarURL);
+    const URL = await uploadUserAvatarsToStorage(photo, email);
+    await dispatch(changeUserPhotoURL({ newAvatarURL }));
+    setIsLoading(false);
+    setNewAvatarURL(URL);
   };
 
   const openCamera = () => {
@@ -100,31 +104,41 @@ export const ProfileScreen = ({ navigation, route }) => {
       >
         <Container addStyles={styles.container}>
           <TouchableOpacity onPress={() => setModalVisible(true)}>
-            {avatarURL ? (
-              <>
-                <Image
-                  source={{ uri: newAvatarURL ? newAvatarURL : avatarURL }}
-                  style={styles.avatar}
-                />
-                <CrossIcon
-                  style={{
-                    ...styles.avatarIcon,
-                    right: halfWindowsWidth - 96,
-                    bottom: -35,
-                  }}
-                  width={40}
-                  height={40}
-                />
-              </>
+            {isLoading ? (
+              <ActivityIndicator size={"small"} color={"#FF6C00"} />
             ) : (
               <>
-                <View
-                  style={{
-                    ...styles.avatar,
-                    backgroundColor: "#F6F6F6",
-                  }}
-                />
-                <PlusIcon style={styles.avatarIcon} width={25} height={25} />
+                {avatarURL ? (
+                  <>
+                    <Image
+                      source={{ uri: newAvatarURL ? newAvatarURL : avatarURL }}
+                      style={styles.avatar}
+                    />
+                    <CrossIcon
+                      style={{
+                        ...styles.avatarIcon,
+                        right: halfWindowsWidth - 96,
+                        bottom: -35,
+                      }}
+                      width={40}
+                      height={40}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <View
+                      style={{
+                        ...styles.avatar,
+                        backgroundColor: "#F6F6F6",
+                      }}
+                    />
+                    <PlusIcon
+                      style={styles.avatarIcon}
+                      width={25}
+                      height={25}
+                    />
+                  </>
+                )}
               </>
             )}
           </TouchableOpacity>
