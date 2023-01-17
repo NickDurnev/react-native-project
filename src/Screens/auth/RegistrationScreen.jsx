@@ -13,7 +13,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useDispatch } from "react-redux";
-import { uploadUserAvatarsToStorage } from "../../firebase/storageOperations";
+import { uploadImageToStorage } from "../../firebase/storageOperations";
 import {
   Title,
   Input,
@@ -75,7 +75,11 @@ export const RegistrationScreen = ({ navigation }) => {
       setState(initialState);
       return;
     }
-    const imageURL = await uploadUserAvatarsToStorage(photo, state.email);
+    const imageURL = await uploadImageToStorage(
+      photo,
+      "usersAvatars",
+      state.email
+    );
     await dispatch(authRegister({ ...state, imageURL }));
     setIsLoading(false);
     setState(initialState);

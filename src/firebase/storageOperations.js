@@ -1,6 +1,6 @@
 import {
   ref,
-  uploadBytes,
+  uploadBytesResumable,
   getDownloadURL,
   deleteObject,
 } from "firebase/storage";
@@ -17,51 +17,47 @@ import Toast from "react-native-toast-message";
 import { customAlphabet } from "nanoid/non-secure";
 import { storage, db } from "./config";
 
-export const uploadPhotoToStorage = async (photo) => {
-  try {
-    const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 10);
-    const response = await fetch(photo);
-    const file = await response.blob();
-    const storageRef = await ref(storage, `postImages/${nanoid()}`);
-    await uploadBytes(storageRef, file);
-    const photoURL = await getDownloadURL(storageRef);
-    return photoURL;
-  } catch (error) {
-    console.log(error.message);
-    Toast.show({
-      type: "error",
-      text1: "Щось пішло не так. Спробуйте ще раз",
-    });
-  }
+const nanoidType = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 10);
+
+export const uploadImageToStorage = async (
+  uri,
+  folder,
+  name = nanoidType()
+) => {
+  // Why are we using XMLHttpRequest? See:
+  // https://github.com/expo/expo/issues/2402#issuecomment-443726662
+  const blob = await new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+      resolve(xhr.response);
+    };
+    xhr.onerror = function (e) {
+      reject(new TypeError("Network request failed"));
+    };
+    xhr.responseType = "blob";
+    xhr.open("GET", uri, true);
+    xhr.send(null);
+  });
+
+  const fileRef = ref(storage, `${folder}/${name}`);
+  await uploadBytesResumable(fileRef, blob);
+
+  // We're done with the blob, close and release it
+  blob.close();
+
+  return await getDownloadURL(fileRef);
 };
 
-export const uploadUserAvatarsToStorage = async (photo, email) => {
-  try {
-    const response = await fetch(photo);
-    const file = await response.blob();
-    const storageRef = await ref(storage, `usersAvatars/${email}`);
-    await uploadBytes(storageRef, file);
-    const photoURL = await getDownloadURL(storageRef);
-    return photoURL;
-  } catch (error) {
-    console.log(error.message);
-    console.log(error.code);
-    Toast.show({
-      type: "error",
-      text1: "Щось пішло не так. Спробуйте ще раз",
-    });
-  }
-};
-
-export const deleteFileFromStorage = async (name) => {
-  const fileRef = ref(storage, `usersAvatars/${name}`);
-  if (!fileRef) {
-    return;
-  }
+export const deleteImageFromStorage = async (name) => {
+  const fileRef = ref(storage, `usersAvatars/${name}.jpg`);
   try {
     await deleteObject(fileRef);
     return true;
   } catch (error) {
+    if (error.code === "storage/object-not-found") {
+      console.log("Image isn't found");
+      return;
+    }
     console.log(error.message);
   }
 };

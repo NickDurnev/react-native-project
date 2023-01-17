@@ -1,3 +1,4 @@
+import { FieldValue } from "firebase/firestore";
 import {
   StyleSheet,
   TouchableOpacity,
@@ -15,7 +16,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import * as Location from "expo-location";
 import {
-  uploadPhotoToStorage,
+  uploadImageToStorage,
   uploadPostToDB,
 } from "../../firebase/storageOperations";
 import {
@@ -104,7 +105,7 @@ export const CreatePostScreen = ({ navigation, route }) => {
         longitude: location.coords.longitude,
       };
     }
-    const imageURL = await uploadPhotoToStorage(photo);
+    const imageURL = await uploadImageToStorage(photo, "postImages");
     const post = {
       ...state,
       photo: imageURL,

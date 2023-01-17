@@ -13,8 +13,8 @@ import {
 import { collection, where, onSnapshot, query } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import {
-  uploadUserAvatarsToStorage,
-  deleteFileFromStorage,
+  uploadImageToStorage,
+  deleteImageFromStorage,
 } from "../../firebase/storageOperations";
 import {
   Container,
@@ -28,10 +28,13 @@ import {
   authLogoOut,
   changeUserPhotoURL,
 } from "../../redux/auth/authOperations";
+import { authSlice } from "../../redux/auth/authSlice";
 
 //#Icons imports
 import CrossIcon from "../../../assets/icons/delete-cross.svg";
 import PlusIcon from "../../../assets/icons/add-plus.svg";
+
+const { changeAvatar } = authSlice.actions;
 
 const halfWindowsWidth = Dimensions.get("window").width / 2;
 
@@ -83,10 +86,11 @@ export const ProfileScreen = ({ navigation, route }) => {
     }
     setIsLoading(true);
     if (avatarURL) {
-      await deleteFileFromStorage(email);
+      await deleteImageFromStorage(email);
+      dispatch(changeAvatar({ avatarURL: null }));
     }
-    const URL = await uploadUserAvatarsToStorage(photo, email);
-    await dispatch(changeUserPhotoURL({ newAvatarURL }));
+    const URL = await uploadImageToStorage(photo, "usersAvatars", email);
+    await dispatch(changeUserPhotoURL({ URL }));
     setIsLoading(false);
     setNewAvatarURL(URL);
   };
@@ -108,7 +112,7 @@ export const ProfileScreen = ({ navigation, route }) => {
               <ActivityIndicator size={"small"} color={"#FF6C00"} />
             ) : (
               <>
-                {avatarURL ? (
+                {avatarURL || newAvatarURL ? (
                   <>
                     <Image
                       source={{ uri: newAvatarURL ? newAvatarURL : avatarURL }}
