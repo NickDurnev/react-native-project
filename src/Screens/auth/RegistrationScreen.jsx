@@ -37,7 +37,7 @@ const initialState = {
   password: "",
 };
 
-export const RegistrationScreen = ({ navigation }) => {
+export const RegistrationScreen = ({ navigation, route }) => {
   const [photo, setPhoto] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isHiddenPassword, setIsHiddenPassword] = useState(true);
@@ -46,6 +46,12 @@ export const RegistrationScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (route.params) {
+      setPhoto(route.params.photo);
+    }
+  }, [route]);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
