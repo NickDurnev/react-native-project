@@ -10,3 +10,4 @@ export * from "./AuthRoute.jsx";
 export * from "./Main.jsx";
 export * from "./ModalView.jsx";
 export * from "./PhotoPicker.jsx";
+export * from "./Skeleton.jsx";

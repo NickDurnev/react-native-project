@@ -1,15 +1,27 @@
 import PropTypes from "prop-types";
+import { useState } from "react";
 import { useSelector } from "react-redux";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+} from "react-native";
 import Toast from "react-native-toast-message";
 import { uploadLikeToDB } from "../firebase/storageOperations";
+import { Skeleton } from "../components";
 
 //#Icons imports
 import CommentIcon from "../../assets/icons/message-circle.svg";
 import LikeIcon from "../../assets/icons/thumbs-up.svg";
 import MapIcon from "../../assets/icons/map-pin.svg";
 
+const windowsWidth = Dimensions.get("window").width;
+
 export const Post = ({ data, showComments, showLocation }) => {
+  const [isLoading, setIsLoading] = useState(true);
   const { id, name, location, photo, commentsNumber, likesNumber, coords } =
     data;
 
@@ -33,63 +45,72 @@ export const Post = ({ data, showComments, showLocation }) => {
         marginBottom: 32,
       }}
     >
-      <Image source={{ uri: photo }} style={styles.image} />
-      <View style={{ paddingVertical: 5 }}>
-        <Text style={styles.imageName}>{name}</Text>
-      </View>
-      <View>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <View style={{ flexDirection: "row" }}>
+      {isLoading && <Skeleton width={windowsWidth} height={300} />}
+      <Image
+        source={{ uri: photo }}
+        onLoad={() => setIsLoading(false)}
+        style={styles.image}
+      />
+      <>
+        <View style={{ paddingVertical: 5 }}>
+          <Text style={styles.imageName}>{name}</Text>
+        </View>
+        <View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <View style={{ flexDirection: "row" }}>
+              <TouchableOpacity
+                onPress={showComments}
+                style={{ flexDirection: "row", alignItems: "center" }}
+              >
+                <CommentIcon
+                  width={24}
+                  height={24}
+                  style={
+                    commentsNumber > 0
+                      ? { marginRight: 8, stroke: "#FF6C00" }
+                      : { marginRight: 8, stroke: "#BDBDBD" }
+                  }
+                />
+                <Text style={styles.iconNumber}>{commentsNumber}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() =>
+                  uploadLikeToDB(id, userId, nickname, likesNumber)
+                }
+                style={{
+                  marginLeft: 24,
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <LikeIcon
+                  width={24}
+                  height={24}
+                  style={
+                    likesNumber > 0
+                      ? { marginRight: 8, stroke: "#FF6C00" }
+                      : { marginRight: 8, stroke: "#BDBDBD" }
+                  }
+                />
+                <Text style={styles.iconNumber}>{likesNumber}</Text>
+              </TouchableOpacity>
+            </View>
             <TouchableOpacity
-              onPress={showComments}
+              onPress={checkLocation}
               style={{ flexDirection: "row", alignItems: "center" }}
             >
-              <CommentIcon
-                width={24}
-                height={24}
-                style={
-                  commentsNumber > 0
-                    ? { marginRight: 8, stroke: "#FF6C00" }
-                    : { marginRight: 8, stroke: "#BDBDBD" }
-                }
-              />
-              <Text style={styles.iconNumber}>{commentsNumber}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => uploadLikeToDB(id, userId, nickname, likesNumber)}
-              style={{
-                marginLeft: 24,
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <LikeIcon
-                width={24}
-                height={24}
-                style={
-                  likesNumber > 0
-                    ? { marginRight: 8, stroke: "#FF6C00" }
-                    : { marginRight: 8, stroke: "#BDBDBD" }
-                }
-              />
-              <Text style={styles.iconNumber}>{likesNumber}</Text>
+              <MapIcon width={24} height={24} style={{ marginRight: 8 }} />
+              <Text style={styles.locationText}>{location}</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            onPress={checkLocation}
-            style={{ flexDirection: "row", alignItems: "center" }}
-          >
-            <MapIcon width={24} height={24} style={{ marginRight: 8 }} />
-            <Text style={styles.locationText}>{location}</Text>
-          </TouchableOpacity>
         </View>
-      </View>
+      </>
     </View>
   );
 };
