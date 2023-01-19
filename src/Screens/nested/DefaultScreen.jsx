@@ -6,6 +6,8 @@ import { Header, Container, Title, Post, LogoutBtn } from "../../components";
 import { db } from "../../firebase/config";
 import { authLogoOut } from "../../redux/auth/authOperations";
 
+#//TODO Remove User info in separate component. Add skeleton instead it.
+
 export const DefaultScreen = ({ navigation }) => {
   const [data, setData] = useState([]);
 
