@@ -4,10 +4,8 @@ import {
   View,
   ImageBackground,
   StyleSheet,
-  Dimensions,
   FlatList,
   TouchableOpacity,
-  Image,
   ActivityIndicator,
 } from "react-native";
 import { collection, where, onSnapshot, query } from "firebase/firestore";
@@ -23,6 +21,7 @@ import {
   Post,
   PhotoPicker,
   ModalView,
+  ProfileAvatar,
 } from "../../components";
 import {
   authLogoOut,
@@ -30,13 +29,7 @@ import {
 } from "../../redux/auth/authOperations";
 import { authSlice } from "../../redux/auth/authSlice";
 
-//#Icons imports
-import CrossIcon from "../../../assets/icons/delete-cross.svg";
-import PlusIcon from "../../../assets/icons/add-plus.svg";
-
 const { changeAvatar } = authSlice.actions;
-
-const halfWindowsWidth = Dimensions.get("window").width / 2;
 
 export const ProfileScreen = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -111,39 +104,10 @@ export const ProfileScreen = ({ navigation, route }) => {
             {isLoading ? (
               <ActivityIndicator size={"small"} color={"#FF6C00"} />
             ) : (
-              <>
-                {avatarURL || newAvatarURL ? (
-                  <>
-                    <Image
-                      source={{ uri: newAvatarURL ? newAvatarURL : avatarURL }}
-                      style={styles.avatar}
-                    />
-                    <CrossIcon
-                      style={{
-                        ...styles.avatarIcon,
-                        right: halfWindowsWidth - 96,
-                        bottom: -35,
-                      }}
-                      width={40}
-                      height={40}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <View
-                      style={{
-                        ...styles.avatar,
-                        backgroundColor: "#F6F6F6",
-                      }}
-                    />
-                    <PlusIcon
-                      style={styles.avatarIcon}
-                      width={25}
-                      height={25}
-                    />
-                  </>
-                )}
-              </>
+              <ProfileAvatar
+                avatarURL={avatarURL}
+                newAvatarURL={newAvatarURL}
+              />
             )}
           </TouchableOpacity>
           <LogoutBtn
@@ -226,19 +190,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-  },
-  avatar: {
-    height: 120,
-    width: 120,
-    position: "absolute",
-    top: -75,
-    left: halfWindowsWidth - 75,
-    borderRadius: 16,
-  },
-  avatarIcon: {
-    position: "absolute",
-    bottom: -30,
-    right: halfWindowsWidth - 90,
   },
   title: {
     marginTop: 50,

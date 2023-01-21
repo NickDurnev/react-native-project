@@ -1,12 +1,17 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { View, FlatList, StyleSheet, Image, Text } from "react-native";
+import { View, FlatList, StyleSheet } from "react-native";
 import { collection, onSnapshot } from "firebase/firestore";
-import { Header, Container, Title, Post, LogoutBtn } from "../../components";
+import {
+  Header,
+  Container,
+  Title,
+  Post,
+  UserInfo,
+  LogoutBtn,
+} from "../../components";
 import { db } from "../../firebase/config";
 import { authLogoOut } from "../../redux/auth/authOperations";
-
-#//TODO Remove User info in separate component. Add skeleton instead it.
 
 export const DefaultScreen = ({ navigation }) => {
   const [data, setData] = useState([]);
@@ -61,22 +66,11 @@ export const DefaultScreen = ({ navigation }) => {
             } = item;
             return (
               <View style={styles.post}>
-                <View style={styles.user}>
-                  {userAvatar ? (
-                    <Image source={{ uri: userAvatar }} style={styles.avatar} />
-                  ) : (
-                    <View
-                      style={{
-                        ...styles.avatar,
-                        backgroundColor: "#F6F6F6",
-                      }}
-                    />
-                  )}
-                  <View style={styles.textWrap}>
-                    <Text style={styles.name}>{nickname}</Text>
-                    <Text style={styles.email}>{email}</Text>
-                  </View>
-                </View>
+                <UserInfo
+                  userAvatar={userAvatar}
+                  nickname={nickname}
+                  email={email}
+                />
                 <Post
                   data={{
                     id,
@@ -116,32 +110,5 @@ export const DefaultScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   post: {
     flexDirection: "column",
-  },
-  user: {
-    flexDirection: "row",
-    marginBottom: 32,
-  },
-  avatar: {
-    marginRight: 10,
-    width: 60,
-    height: 60,
-    borderRadius: 16,
-  },
-  textWrap: {
-    alignItems: "flex-start",
-    justifyContent: "center",
-  },
-  name: {
-    fontFamily: "Roboto-Bold",
-    fontWeight: "700",
-    fontSize: 13,
-    lineHeight: 15,
-    color: "#212121",
-  },
-  email: {
-    fontFamily: "Roboto-Regular",
-    fontSize: 11,
-    lineHeight: 13,
-    color: "#212121",
   },
 });

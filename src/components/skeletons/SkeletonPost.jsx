@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import React from "react";
 import ContentLoader, { Rect } from "react-content-loader/native";
 
@@ -17,3 +18,8 @@ export const SkeletonPost = ({ width, height }) => (
     <Rect x="90" y="90" rx="2" ry="2" width="50" height="15" />
   </ContentLoader>
 );
+
+SkeletonPost.propTypes = {
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
+};
