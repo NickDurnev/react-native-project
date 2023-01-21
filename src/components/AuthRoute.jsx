@@ -5,6 +5,7 @@ import {
   LoginScreen,
   Home,
   CameraScreen,
+  WelcomeScreen,
 } from "../Screens";
 
 const AuthStack = createStackNavigator();
@@ -37,6 +38,11 @@ export const AuthRoute = ({ stateChange }) => {
             options={{ headerShown: false }}
             name="Home"
             component={Home}
+          />
+          <AuthStack.Screen
+            options={{ headerShown: false }}
+            name="Welcome"
+            component={WelcomeScreen}
           />
           <AuthStack.Screen
             options={{ headerShown: false }}

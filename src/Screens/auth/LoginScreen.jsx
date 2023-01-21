@@ -52,7 +52,7 @@ export const LoginScreen = ({ navigation }) => {
     await dispatch(authLogin(state));
     setIsLoading(false);
     setstate(initialState);
-    navigation.navigate("Home");
+    navigation.navigate("Welcome");
   };
 
   const handleKeyboardHide = () => {
