@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
 import { Camera } from "expo-camera";
@@ -39,11 +39,13 @@ export const PhotoPicker = ({ setPhoto, setModalVisible, openCamera }) => {
     <View style={styles.wrap}>
       {cameraPermission && (
         <TouchableOpacity style={styles.button} onPress={openCamera}>
-          <CameraIcon width={24} height={24} />
+          <CameraIcon width={30} height={30} fill={"#e4e1e0e2"} />
+          <Text style={styles.text}>Камера</Text>
         </TouchableOpacity>
       )}
       <TouchableOpacity style={styles.button} onPress={pickImage}>
-        <Entypo name="images" size={24} color="#BDBDBD" />
+        <Entypo name="images" size={30} color="#e4e1e0e2" />
+        <Text style={styles.text}>Галерея</Text>
       </TouchableOpacity>
     </View>
   );
@@ -51,18 +53,26 @@ export const PhotoPicker = ({ setPhoto, setModalVisible, openCamera }) => {
 
 const styles = StyleSheet.create({
   wrap: {
-    width: 150,
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "center",
+    width: 200,
+    height: 150,
   },
   button: {
-    width: 60,
-    height: 60,
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#F6F6F6",
-    borderRadius: "50%",
+    justifyContent: "space-between",
+    width: 200,
+    padding: 15,
+    borderRadius: 10,
+    backgroundColor: "#ea9b55d5",
+  },
+  text: {
+    fontFamily: "Roboto-Medium",
+    fontSize: 27,
+    fontWeight: 500,
+    color: "#e4e1e0e2",
   },
 });
 

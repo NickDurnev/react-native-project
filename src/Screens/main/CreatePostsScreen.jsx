@@ -1,4 +1,3 @@
-import { FieldValue } from "firebase/firestore";
 import {
   StyleSheet,
   TouchableOpacity,

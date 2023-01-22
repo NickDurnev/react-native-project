@@ -15,3 +15,5 @@ export * from "./ProfileAvatar.jsx";
 export * from "./skeletons/SkeletonPost.jsx";
 export * from "./skeletons/SkeletonUserInfo.jsx";
 export * from "./skeletons/SkeletonProfileAvatar.jsx";
+export * from "./EditBtn.jsx";
+export * from "./DeleteBtn.jsx";

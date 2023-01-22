@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { View, FlatList, StyleSheet } from "react-native";
 import { collection, onSnapshot } from "firebase/firestore";
 import {
@@ -9,12 +9,23 @@ import {
   Post,
   UserInfo,
   LogoutBtn,
+  EditBtn,
+  ModalView,
+  DeleteBtn,
 } from "../../components";
 import { db } from "../../firebase/config";
+import {
+  deletePostFromDB,
+  deleteImageFromStorage,
+} from "../../firebase/storageOperations";
 import { authLogoOut } from "../../redux/auth/authOperations";
 
 export const DefaultScreen = ({ navigation }) => {
   const [data, setData] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState(null);
+
+  const { userId } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
 
@@ -31,6 +42,17 @@ export const DefaultScreen = ({ navigation }) => {
   useEffect(() => {
     getPosts();
   }, []);
+
+  const handleEdit = (id) => {
+    setSelectedPostId(id);
+    setModalVisible(true);
+  };
+
+  const handleDelete = async () => {
+    await deletePostFromDB(selectedPostId);
+    // await deleteImageFromStorage("postImages", selectedPostId);
+    setModalVisible(false);
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -66,11 +88,18 @@ export const DefaultScreen = ({ navigation }) => {
             } = item;
             return (
               <View style={styles.post}>
-                <UserInfo
-                  userAvatar={userAvatar}
-                  nickname={nickname}
-                  email={email}
-                />
+                <View style={styles.wrap}>
+                  <UserInfo
+                    userAvatar={userAvatar}
+                    nickname={nickname}
+                    email={email}
+                  />
+                  {userId === item.userId && (
+                    <View style={{ paddingBottom: 30 }}>
+                      <EditBtn onPress={() => handleEdit(id)} />
+                    </View>
+                  )}
+                </View>
                 <Post
                   data={{
                     id,
@@ -102,6 +131,14 @@ export const DefaultScreen = ({ navigation }) => {
           }}
           keyExtractor={(item) => item.id}
         ></FlatList>
+        <ModalView
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          width={200}
+          height={100}
+        >
+          <DeleteBtn onPress={handleDelete} />
+        </ModalView>
       </Container>
     </View>
   );
@@ -110,5 +147,11 @@ export const DefaultScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   post: {
     flexDirection: "column",
+  },
+  wrap: {
+    width: "95%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 });

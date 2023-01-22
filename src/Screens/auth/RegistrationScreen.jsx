@@ -89,6 +89,7 @@ export const RegistrationScreen = ({ navigation, route }) => {
     await dispatch(authRegister({ ...state, imageURL }));
     setIsLoading(false);
     setState(initialState);
+    navigation.navigate("Welcome");
   };
 
   const handleKeyboardHide = () => {

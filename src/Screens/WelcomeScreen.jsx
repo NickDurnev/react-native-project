@@ -13,7 +13,7 @@ export const WelcomeScreen = ({ navigation }) => {
         speed={1}
         loop={false}
       />
-      <Text style={styles.text}>Welcome</Text>
+      <Text style={styles.text}>Вітаємо</Text>
     </View>
   );
 };
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   text: {
     position: "absolute",
     bottom: 120,
-    left: windowWidth * 0.07,
+    left: windowWidth * 0.1,
     fontFamily: "Roboto-Bold",
     fontSize: 90,
     fontWeight: 600,

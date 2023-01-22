@@ -13,6 +13,7 @@ import { db } from "../../firebase/config";
 import {
   uploadImageToStorage,
   deleteImageFromStorage,
+  deletePostFromDB,
 } from "../../firebase/storageOperations";
 import {
   Container,
@@ -22,6 +23,8 @@ import {
   PhotoPicker,
   ModalView,
   ProfileAvatar,
+  EditBtn,
+  DeleteBtn,
 } from "../../components";
 import {
   authLogoOut,
@@ -36,7 +39,9 @@ export const ProfileScreen = ({ navigation, route }) => {
   const [newAvatarURL, setNewAvatarURL] = useState(null);
   const [data, setData] = useState([]);
   const [photo, setPhoto] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalPhotoVisible, setModalPhotoVisible] = useState(false);
+  const [modalEditVisible, setModalEditVisible] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState(null);
 
   const { userId, nickname, email, avatarURL } = useSelector(
     (state) => state.auth
@@ -79,7 +84,7 @@ export const ProfileScreen = ({ navigation, route }) => {
     }
     setIsLoading(true);
     if (avatarURL) {
-      await deleteImageFromStorage(email);
+      await deleteImageFromStorage("usersAvatars", email);
       dispatch(changeAvatar({ avatarURL: null }));
     }
     const URL = await uploadImageToStorage(photo, "usersAvatars", email);
@@ -89,8 +94,19 @@ export const ProfileScreen = ({ navigation, route }) => {
   };
 
   const openCamera = () => {
-    setModalVisible(false);
+    setModalPhotoVisible(false);
     navigation.navigate("CameraScreen", { prevScreen: "Profile" });
+  };
+
+  const handleEdit = (id) => {
+    setSelectedPostId(id);
+    setModalEditVisible(true);
+  };
+
+  const handleDelete = async () => {
+    await deletePostFromDB(selectedPostId);
+    // await deleteImageFromStorage("postImages", selectedPostId);
+    setModalEditVisible(false);
   };
 
   return (
@@ -100,7 +116,7 @@ export const ProfileScreen = ({ navigation, route }) => {
         source={require("../../../assets/images/PhotoBG.png")}
       >
         <Container addStyles={styles.container}>
-          <TouchableOpacity onPress={() => setModalVisible(true)}>
+          <TouchableOpacity onPress={() => setModalPhotoVisible(true)}>
             {isLoading ? (
               <ActivityIndicator size={"small"} color={"#FF6C00"} />
             ) : (
@@ -129,46 +145,62 @@ export const ProfileScreen = ({ navigation, route }) => {
               } = item;
               return (
                 <View>
-                  <Post
-                    data={{
-                      name,
-                      location,
-                      photo,
-                      commentsNumber,
-                      likesNumber,
-                      coords,
-                    }}
-                    showComments={() =>
-                      navigation.navigate("CommentsScreen", {
-                        id,
+                  <View>
+                    <EditBtn
+                      onPress={() => handleEdit(id)}
+                      styles={{ marginLeft: "auto" }}
+                    />
+                    <Post
+                      data={{
+                        name,
+                        location,
                         photo,
                         commentsNumber,
-                        prevScreen: "Profile",
-                      })
-                    }
-                    showLocation={() =>
-                      navigation.navigate("MapScreen", {
-                        photo,
+                        likesNumber,
                         coords,
-                        prevScreen: "Profile",
-                      })
-                    }
-                    marginBottom={index === data.length - 1 ? 0 : 32}
-                  />
+                      }}
+                      showComments={() =>
+                        navigation.navigate("CommentsScreen", {
+                          id,
+                          photo,
+                          commentsNumber,
+                          prevScreen: "Profile",
+                        })
+                      }
+                      showLocation={() =>
+                        navigation.navigate("MapScreen", {
+                          photo,
+                          coords,
+                          prevScreen: "Profile",
+                        })
+                      }
+                      marginBottom={index === data.length - 1 ? 0 : 32}
+                    />
+                  </View>
                 </View>
               );
             }}
             keyExtractor={(item) => item.id}
           ></FlatList>
           <ModalView
-            modalVisible={modalVisible}
-            setModalVisible={setModalVisible}
+            modalVisible={modalPhotoVisible}
+            setModalVisible={setModalPhotoVisible}
+            width={200}
+            height={150}
           >
             <PhotoPicker
               setPhoto={(photo) => setPhoto(photo)}
-              setModalVisible={setModalVisible}
+              setModalVisible={setModalPhotoVisible}
               openCamera={openCamera}
             />
+          </ModalView>
+          <ModalView
+            modalVisible={modalEditVisible}
+            setModalVisible={setModalEditVisible}
+            width={200}
+            height={100}
+          >
+            <DeleteBtn onPress={handleDelete} />
           </ModalView>
         </Container>
       </ImageBackground>

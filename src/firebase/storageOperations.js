@@ -6,6 +6,7 @@ import {
 } from "firebase/storage";
 import {
   addDoc,
+  deleteDoc,
   updateDoc,
   getDocs,
   doc,
@@ -48,8 +49,8 @@ export const uploadImageToStorage = async (
   return await getDownloadURL(fileRef);
 };
 
-export const deleteImageFromStorage = async (name) => {
-  const fileRef = ref(storage, `usersAvatars/${name}.jpg`);
+export const deleteImageFromStorage = async (path, name) => {
+  const fileRef = ref(storage, `${path}/${name}.jpg`);
   try {
     await deleteObject(fileRef);
     return true;
@@ -65,6 +66,19 @@ export const deleteImageFromStorage = async (name) => {
 export const uploadPostToDB = async (post) => {
   try {
     await addDoc(collection(db, "posts"), post);
+  } catch (error) {
+    console.log(error.message);
+    Toast.show({
+      type: "error",
+      text1: "Щось пішло не так. Спробуйте ще раз",
+    });
+  }
+};
+
+export const deletePostFromDB = async (id) => {
+  console.log(id);
+  try {
+    await deleteDoc(doc(db, "posts", id));
   } catch (error) {
     console.log(error.message);
     Toast.show({

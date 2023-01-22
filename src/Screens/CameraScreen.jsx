@@ -27,7 +27,7 @@ export const CameraScreen = ({ navigation, route }) => {
           style={styles.backButton}
           onPress={() => navigation.navigate(prevScreen)}
         >
-          <GoBackIcon height={30} width={30} />
+          <GoBackIcon height={35} width={35} />
         </TouchableOpacity>
       </View>
       {photo ? (
@@ -70,10 +70,10 @@ export const CameraScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   backButton: {
     position: "absolute",
-    top: 30,
+    top: 40,
     left: 16,
-    width: 32,
-    height: 32,
+    width: 40,
+    height: 40,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: "50%",

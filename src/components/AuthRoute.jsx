@@ -10,7 +10,7 @@ import {
 
 const AuthStack = createStackNavigator();
 
-export const AuthRoute = ({ stateChange }) => {
+export const AuthRoute = ({ stateChange, firstEnter }) => {
   return (
     <AuthStack.Navigator initialRouteName="Login">
       {!stateChange && (
@@ -32,17 +32,19 @@ export const AuthRoute = ({ stateChange }) => {
           />
         </>
       )}
+      {stateChange && firstEnter && (
+        <AuthStack.Screen
+          options={{ headerShown: false }}
+          name="Welcome"
+          component={WelcomeScreen}
+        />
+      )}
       {stateChange && (
         <>
           <AuthStack.Screen
             options={{ headerShown: false }}
             name="Home"
             component={Home}
-          />
-          <AuthStack.Screen
-            options={{ headerShown: false }}
-            name="Welcome"
-            component={WelcomeScreen}
           />
           <AuthStack.Screen
             options={{ headerShown: false }}

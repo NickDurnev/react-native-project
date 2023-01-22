@@ -28,6 +28,7 @@ export const authRegister =
           nickname: displayName,
           email: email,
           avatarURL: photoURL,
+          firstEnter: true,
         })
       );
     } catch (error) {

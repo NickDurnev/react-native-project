@@ -60,8 +60,6 @@ export const LoginScreen = ({ navigation }) => {
     Keyboard.dismiss();
   };
 
-  console.log(isLoading);
-
   return (
     <TouchableWithoutFeedback onPress={handleKeyboardHide}>
       <View style={styles.container}>

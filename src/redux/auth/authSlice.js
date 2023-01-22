@@ -14,16 +14,25 @@ const actions = {
       nickname: payload.nickname,
       email: payload.email,
       avatarURL: payload.avatarURL,
+      firstEnter: true,
     };
   },
   updateStateChange: (state, { payload }) => ({
     ...state,
     stateChange: payload.stateChange,
   }),
-  authSignOut: () => ({ ...initialState, stateChange: false }),
+  authSignOut: () => ({
+    ...initialState,
+    stateChange: false,
+    firstEnter: false,
+  }),
   changeAvatar: (state, { payload }) => ({
     ...state,
     avatarURL: payload.avatarURL,
+  }),
+  changeFirstEner: (state) => ({
+    ...state,
+    firstEnter: false,
   }),
 };
 

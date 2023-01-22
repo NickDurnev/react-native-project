@@ -10,7 +10,14 @@ import {
 const halfWindowsWidth = Dimensions.get("window").width / 2;
 const halfWindowsHeight = Dimensions.get("window").height / 2;
 
-export const ModalView = ({ children, modalVisible, setModalVisible }) => {
+export const ModalView = ({
+  children,
+  modalVisible,
+  setModalVisible,
+  width,
+  height,
+  backgroundColor,
+}) => {
   return (
     <Modal
       animationType="fade"
@@ -23,7 +30,18 @@ export const ModalView = ({ children, modalVisible, setModalVisible }) => {
       <TouchableWithoutFeedback onPress={() => setModalVisible(!modalVisible)}>
         <View style={styles.modalOverlay} />
       </TouchableWithoutFeedback>
-      <View style={styles.modalView}>{children}</View>
+      <View
+        style={{
+          ...styles.modalView,
+          width: width,
+          height: height,
+          top: halfWindowsHeight - height / 2,
+          left: halfWindowsWidth - width / 2,
+          backgroundColor: backgroundColor,
+        }}
+      >
+        {children}
+      </View>
     </Modal>
   );
 };
@@ -31,11 +49,6 @@ export const ModalView = ({ children, modalVisible, setModalVisible }) => {
 const styles = StyleSheet.create({
   modalView: {
     position: "absolute",
-    top: halfWindowsHeight - 100,
-    left: halfWindowsWidth - 100,
-    width: 200,
-    height: 100,
-    backgroundColor: "white",
     borderRadius: 20,
     padding: 20,
     alignItems: "center",
@@ -61,4 +74,6 @@ const styles = StyleSheet.create({
 ModalView.propTypes = {
   modalVisible: PropTypes.bool.isRequired,
   setModalVisible: PropTypes.func.isRequired,
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
 };

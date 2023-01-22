@@ -1,15 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { PostsScreen, CreatePostScreen, ProfileScreen } from "./main";
+import { authSlice } from "../redux/auth/authSlice";
 
 import PostsIcon from "../../assets/icons/toolbar/grid.svg";
 import UserIcon from "../../assets/icons/toolbar/user.svg";
 import PlusIcon from "../../assets/icons/toolbar/union.svg";
 
+const { changeFirstEner } = authSlice.actions;
+
 const MainTab = createBottomTabNavigator();
 
 export const Home = ({ navigation }) => {
   const [isCreateScreen, setIsCreateScreen] = useState(true);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(changeFirstEner());
+  }, []);
 
   return (
     <MainTab.Navigator

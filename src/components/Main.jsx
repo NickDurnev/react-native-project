@@ -7,7 +7,7 @@ import { AuthRoute } from "../components";
 import { authStateUserChange } from "../redux/auth/authOperations";
 
 export const Main = ({ onLayoutRootView }) => {
-  const { stateChange } = useSelector((state) => state.auth);
+  const { stateChange, firstEnter } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
 
@@ -18,7 +18,9 @@ export const Main = ({ onLayoutRootView }) => {
   return (
     <NavigationContainer>
       <View style={styles.container} onLayout={onLayoutRootView}>
-        {stateChange !== null && <AuthRoute stateChange={stateChange} />}
+        {stateChange !== null && (
+          <AuthRoute stateChange={stateChange} firstEnter={firstEnter} />
+        )}
       </View>
     </NavigationContainer>
   );

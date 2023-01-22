@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import Toast from "react-native-toast-message";
 import { uploadLikeToDB } from "../firebase/storageOperations";
-import { SkeletonPost } from "../components";
+import { SkeletonPost, EditBtn, DeleteBtn } from "../components";
 
 //#Icons imports
 import CommentIcon from "../../assets/icons/message-circle.svg";
