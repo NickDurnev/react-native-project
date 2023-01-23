@@ -15,9 +15,19 @@ import { useSelector } from "react-redux";
 import { collection, onSnapshot } from "firebase/firestore";
 import moment from "moment";
 import "moment/locale/uk";
-import { uploadCommentToDB } from "../../firebase/storageOperations";
+import {
+  uploadCommentToDB,
+  deleteCommentFromDB,
+} from "../../firebase/storageOperations";
 import { db } from "../../firebase/config";
-import { Header, Container, Title } from "../../components";
+import {
+  Header,
+  Container,
+  Title,
+  DeleteBtn,
+  ModalView,
+  Comment,
+} from "../../components";
 
 //#Icons imports
 import GoBackIcon from "../../../assets/icons/arrow-left.svg";
@@ -31,6 +41,8 @@ export const CommentsScreen = ({ navigation, route }) => {
   const [comments, setComments] = useState([]);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const [isShownKeyboard, setIsShownKeyboard] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedCommentId, setSelectedCommentId] = useState(null);
 
   const { id, photo, commentsNumber, prevScreen } = route.params;
   const { userId, nickname, avatarURL } = useSelector((state) => state.auth);
@@ -91,6 +103,17 @@ export const CommentsScreen = ({ navigation, route }) => {
     Keyboard.dismiss();
   };
 
+  const handleEdit = (id) => {
+    setSelectedCommentId(id);
+    setModalVisible(true);
+  };
+
+  const handleDelete = async () => {
+    await deleteCommentFromDB(id, selectedCommentId);
+    // await deleteImageFromStorage("postImages", selectedPostId);
+    setModalVisible(false);
+  };
+
   return (
     <TouchableWithoutFeedback onPress={handleKeyboardHide}>
       <View style={{ flex: 1 }}>
@@ -116,34 +139,27 @@ export const CommentsScreen = ({ navigation, route }) => {
             <FlatList
               data={comments}
               renderItem={({ item, index }) => {
-                const isInteger = Number.isInteger(index / 2);
-                const { text, date, avatarURL } = item;
                 return (
-                  <View
-                    style={{
-                      flexDirection: isInteger ? "row" : "row-reverse",
-                      justifyContent: "space-between",
-                      marginBottom: index === comments.length - 1 ? 0 : 24,
-                    }}
-                  >
-                    <Image source={{ uri: avatarURL }} style={styles.avatar} />
-                    <View style={styles.comment}>
-                      <Text style={styles.nicknameText}>{nickname}</Text>
-                      <Text style={styles.commentText}>{text}</Text>
-                      <View
-                        style={{
-                          flexDirection: isInteger ? "row-reverse" : "row",
-                        }}
-                      >
-                        <Text style={{ ...styles.commentDate }}>{date}</Text>
-                      </View>
-                    </View>
-                  </View>
+                  <Comment
+                    index={index}
+                    item={item}
+                    commentsLength={comments.length}
+                    StoredUserId={userId}
+                    handleEdit={handleEdit}
+                  />
                 );
               }}
               keyExtractor={(item) => item.id}
             ></FlatList>
           )}
+          <ModalView
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+            width={200}
+            height={100}
+          >
+            <DeleteBtn onPress={handleDelete} />
+          </ModalView>
         </Container>
         <View
           style={{
@@ -186,40 +202,6 @@ const styles = StyleSheet.create({
     height: 240,
     backgroundColor: "#F6F6F6",
     borderRadius: 8,
-  },
-  avatar: {
-    width: 28,
-    height: 28,
-    backgroundColor: "#F6F6F6",
-    borderRadius: 50,
-  },
-  comment: {
-    width: windowsWidth - 32 - 28 - 16,
-    padding: 16,
-    backgroundColor: "#F6F6F6",
-    borderRadius: 6,
-    borderTopRightRadius: 0,
-  },
-  commentText: {
-    marginBottom: 8,
-    fontFamily: "Roboto-Regular",
-    fontSize: 13,
-    lineHeight: 18,
-    color: "#212121",
-  },
-  nicknameText: {
-    marginBottom: 8,
-    fontFamily: "Roboto-Medium",
-    fontWeight: 500,
-    fontSize: 16,
-    lineHeight: 18,
-    color: "#212121",
-  },
-  commentDate: {
-    fontFamily: "Roboto-Regular",
-    fontSize: 10,
-    lineHeight: 12,
-    color: "#BDBDBD",
   },
   input: {
     padding: 16,

@@ -24,6 +24,7 @@ export const DefaultScreen = ({ navigation }) => {
   const [data, setData] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState(null);
+  const [selectedPostPhoto, setSelectedPostPhoto] = useState(null);
 
   const { userId } = useSelector((state) => state.auth);
 
@@ -43,14 +44,15 @@ export const DefaultScreen = ({ navigation }) => {
     getPosts();
   }, []);
 
-  const handleEdit = (id) => {
+  const handleEdit = (id, photo) => {
     setSelectedPostId(id);
+    setSelectedPostPhoto(photo);
     setModalVisible(true);
   };
 
   const handleDelete = async () => {
     await deletePostFromDB(selectedPostId);
-    // await deleteImageFromStorage("postImages", selectedPostId);
+    await deleteImageFromStorage("postImages", selectedPostPhoto);
     setModalVisible(false);
   };
 
@@ -96,7 +98,7 @@ export const DefaultScreen = ({ navigation }) => {
                   />
                   {userId === item.userId && (
                     <View style={{ paddingBottom: 30 }}>
-                      <EditBtn onPress={() => handleEdit(id)} />
+                      <EditBtn onPress={() => handleEdit(id, photo)} />
                     </View>
                   )}
                 </View>

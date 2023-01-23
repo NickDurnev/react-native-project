@@ -50,7 +50,12 @@ export const uploadImageToStorage = async (
 };
 
 export const deleteImageFromStorage = async (path, name) => {
-  const fileRef = ref(storage, `${path}/${name}.jpg`);
+  console.log(name);
+  const firstIndex = name.indexOf("%");
+  const secondIndex = name.indexOf("?");
+  const parsedName = name.slice(firstIndex + 3, secondIndex);
+  console.log(parsedName);
+  const fileRef = ref(storage, `${path}/${parsedName}`);
   try {
     await deleteObject(fileRef);
     return true;
@@ -75,10 +80,23 @@ export const uploadPostToDB = async (post) => {
   }
 };
 
-export const deletePostFromDB = async (id) => {
-  console.log(id);
+export const deletePostFromDB = async (postId) => {
   try {
-    await deleteDoc(doc(db, "posts", id));
+    await deleteDoc(doc(db, "posts", postId));
+  } catch (error) {
+    console.log(error.message);
+    Toast.show({
+      type: "error",
+      text1: "Щось пішло не так. Спробуйте ще раз",
+    });
+  }
+};
+
+export const deleteCommentFromDB = async (postId, commentId) => {
+  try {
+    const docRef = doc(db, "posts", postId);
+    await deleteDoc(doc(docRef, "comments", commentId));
+    await updateDoc(docRef, { commentsNumber: commentsNumber - 1 });
   } catch (error) {
     console.log(error.message);
     Toast.show({
@@ -104,19 +122,33 @@ export const uploadCommentToDB = async ({
 };
 
 export const uploadLikeToDB = async (id, userId, nickname, likesNumber) => {
-  let isLiked = false;
+  let docId = null;
   const docRef = doc(db, "posts", id);
   const colRef = collection(docRef, "likes");
   const userLikes = await query(colRef, where("userId", "==", userId));
   const isLikedSnapshot = await getDocs(userLikes);
   isLikedSnapshot.forEach((doc) => {
     if (doc) {
-      isLiked = true;
+      docId = doc.id;
     }
   });
-  if (isLiked) {
+  if (docId) {
+    deleteLikeFromDB(id, docId);
+    await updateDoc(docRef, { likesNumber: likesNumber - 1 });
     return;
   }
   await addDoc(colRef, { userId, nickname });
   await updateDoc(docRef, { likesNumber: likesNumber + 1 });
+};
+
+export const deleteLikeFromDB = async (postId, userId) => {
+  try {
+    await deleteDoc(doc(db, "posts", postId, "likes", userId));
+  } catch (error) {
+    console.log(error.message);
+    Toast.show({
+      type: "error",
+      text1: "Щось пішло не так. Спробуйте ще раз",
+    });
+  }
 };

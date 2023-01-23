@@ -105,7 +105,7 @@ export const ProfileScreen = ({ navigation, route }) => {
 
   const handleDelete = async () => {
     await deletePostFromDB(selectedPostId);
-    // await deleteImageFromStorage("postImages", selectedPostId);
+    await deleteImageFromStorage("postImages", selectedPostId);
     setModalEditVisible(false);
   };
 

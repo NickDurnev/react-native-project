@@ -176,7 +176,7 @@ export const CreatePostScreen = ({ navigation, route }) => {
                         style={styles.cameraBtn}
                         onPress={() => setModalVisible(true)}
                       >
-                        <CameraIcon width={24} height={24} />
+                        <CameraIcon width={24} height={24} fill={"#e4e1e0e2"} />
                       </TouchableOpacity>
                       <Text style={styles.text}>Завантажте фото</Text>
                     </View>
@@ -224,6 +224,8 @@ export const CreatePostScreen = ({ navigation, route }) => {
             <ModalView
               modalVisible={modalVisible}
               setModalVisible={setModalVisible}
+              width={200}
+              height={150}
             >
               <PhotoPicker
                 setPhoto={(photo) => setPhoto(photo)}
