@@ -75,7 +75,7 @@ export const DefaultScreen = ({ navigation }) => {
       <Container addStyles={{ flex: 1 }}>
         <FlatList
           data={data}
-          renderItem={({ item, index }) => {
+          renderItem={({ item }) => {
             const {
               id,
               nickname,

@@ -4,7 +4,6 @@ import {
   View,
   FlatList,
   TouchableOpacity,
-  Text,
   TextInput,
   Dimensions,
   Keyboard,
@@ -109,8 +108,7 @@ export const CommentsScreen = ({ navigation, route }) => {
   };
 
   const handleDelete = async () => {
-    await deleteCommentFromDB(id, selectedCommentId);
-    // await deleteImageFromStorage("postImages", selectedPostId);
+    await deleteCommentFromDB(id, selectedCommentId, commentsNumber);
     setModalVisible(false);
   };
 

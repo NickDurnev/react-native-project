@@ -92,20 +92,6 @@ export const deletePostFromDB = async (postId) => {
   }
 };
 
-export const deleteCommentFromDB = async (postId, commentId) => {
-  try {
-    const docRef = doc(db, "posts", postId);
-    await deleteDoc(doc(docRef, "comments", commentId));
-    await updateDoc(docRef, { commentsNumber: commentsNumber - 1 });
-  } catch (error) {
-    console.log(error.message);
-    Toast.show({
-      type: "error",
-      text1: "Щось пішло не так. Спробуйте ще раз",
-    });
-  }
-};
-
 export const uploadCommentToDB = async ({
   id,
   userId,
@@ -119,6 +105,24 @@ export const uploadCommentToDB = async ({
   const colRef = collection(docRef, "comments");
   await addDoc(colRef, { userId, avatarURL, nickname, text, date });
   await updateDoc(docRef, { commentsNumber: commentsNumber + 1 });
+};
+
+export const deleteCommentFromDB = async (
+  postId,
+  commentId,
+  commentsNumber
+) => {
+  try {
+    const docRef = doc(db, "posts", postId);
+    await deleteDoc(doc(docRef, "comments", commentId));
+    await updateDoc(docRef, { commentsNumber: commentsNumber - 1 });
+  } catch (error) {
+    console.log(error.message);
+    Toast.show({
+      type: "error",
+      text1: "Щось пішло не так. Спробуйте ще раз",
+    });
+  }
 };
 
 export const uploadLikeToDB = async (id, userId, nickname, likesNumber) => {
